@@ -1,0 +1,69 @@
+package worms.model.programs.parser;
+
+import worms.model.Program;
+
+public class WhileLoop extends Statement{
+
+	public Expression<Boolean> condition;
+	public Statement body;
+	
+	public WhileLoop(Expression<Boolean> newCondition, Statement newBody)
+	{
+		setCondition(newCondition);
+		newCondition.setHolder(this);
+		newCondition.setProgram(program);
+		
+		setBody(newBody);
+		newBody.setParent(this);
+		newBody.setProgram(program);
+	}
+	public void setCondition(Expression<Boolean> newCondition)
+	{
+		condition = newCondition;
+	}
+	public Expression<Boolean> getCondition()
+	{
+		return condition;
+	}
+	public void setBody(Statement newBody)
+	{
+		body = newBody;
+	}
+	public Statement getBody()
+	{
+		return body;
+	}
+	
+	
+	@Override
+	public void execute() {
+		// TODO Auto-generated method stub
+		if(program.hasExceedNumberInstructions()) program.interrupt();
+		if(isDone || program.hasExceedNumberInstructions()) return;
+		program.incrementInstructionNumber();
+		
+		program.stackOfStatements.push(this);
+		while((Boolean)condition.evaluate().getValue())
+		{
+			body.execute();
+			if(program.isInterrupt()) return;
+			reset();
+		}
+		isDone = true;
+		program.stackOfStatements.pop();
+	}
+	@Override
+	public void reset()
+	{
+		isDone = false;
+		body.reset();
+	}
+	@Override
+	public void setProgram(Program program) {
+		// TODO Auto-generated method stub
+		this.program = program;
+		condition.setProgram(program);
+		body.setProgram(program);
+	}
+	
+}

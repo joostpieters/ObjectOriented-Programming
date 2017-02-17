@@ -1,0 +1,25 @@
+package worms.model.programs.parser.removed;
+
+import worms.model.Worm;
+import worms.model.programs.parser.Type;
+
+public class TypeEntity extends Type<Worm>
+{
+	public TypeEntity()
+	{
+		setValue(null);
+	}
+	
+	@Override
+	public Worm getValue() {
+		// TODO Auto-generated method stub
+		return value;
+	}
+
+	@Override
+	public void setValue(Worm newValue) {
+		// TODO Auto-generated method stub
+		value = newValue;
+	}
+
+}

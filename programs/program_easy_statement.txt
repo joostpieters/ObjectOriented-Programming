@@ -1,0 +1,7 @@
+double x; 
+while (x < 1.5) 
+{
+x := x + 0.1;
+print true;
+}
+ turn x;

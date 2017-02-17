@@ -1,0 +1,19 @@
+package worms.model.programs.parser.removed;
+
+import worms.model.programs.parser.Expression;
+import worms.model.programs.parser.Literal;
+import worms.model.programs.parser.UnaryExpression;
+
+public class Sin extends UnaryExpression<Double>{
+
+
+	public Sin(Expression<Double> newExpression)
+	{
+		super(newExpression);
+	}
+	public Literal<Double> evaluate()
+	{
+		return new Literal<>(Math.sin((Double)operand.evaluate().getValue()));
+	}
+
+}

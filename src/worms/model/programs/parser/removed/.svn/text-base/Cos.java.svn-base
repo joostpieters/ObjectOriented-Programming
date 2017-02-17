@@ -1,0 +1,20 @@
+package worms.model.programs.parser.removed;
+
+import worms.model.programs.parser.Expression;
+import worms.model.programs.parser.Literal;
+import worms.model.programs.parser.UnaryExpression;
+
+public class Cos extends UnaryExpression<Double>{
+
+
+	public Cos(Expression<Double> newExpression)
+	{
+		super(newExpression);
+	}
+	@Override
+	public Literal<Double> evaluate()
+	{
+		return new Literal<Double>(Math.cos((Double)(operand.evaluate().getValue())));
+	}
+
+}

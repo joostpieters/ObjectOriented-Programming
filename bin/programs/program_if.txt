@@ -1,0 +1,11 @@
+double a;
+if(false)
+{
+print 55;
+}
+else
+{
+jump;
+turn 2;
+a := 10;
+}

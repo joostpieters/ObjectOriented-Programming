@@ -1,0 +1,19 @@
+double d := 0.01; //1
+bool b := true;	 //2
+entity w;
+
+while(true) {  //3
+  w := searchobj(0); //4 //9
+  if (isworm(w)) then //5  //10
+  {
+  	print true; 
+    fire 100;
+  } 
+  else 
+  {
+  	print false; //6
+    turn d;     //7
+    d := d + 0.005;  //8
+  }
+}
+

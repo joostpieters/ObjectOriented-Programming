@@ -1,0 +1,1274 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.2">
+  <zoom_level>7</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2226</x>
+      <y>525</y>
+      <w>238</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>/worms.model.programs.parser::Action/
+--
++handler: IActionHandler
+--
++Action(IActionHandler newHandler): ctor
++setActionHandler(IActionHandler newHandler): void
++getActionHandler(): IActionHandler
++reset(): void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>455</x>
+      <y>1260</y>
+      <w>385</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Addition
+--
+--
++Addition(Expression&lt;Double&gt; operandLeft, Expression&lt;Double&gt; operandRight): ctor
++evaluate(): Literal&lt;Double&gt;
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1379</x>
+      <y>714</y>
+      <w>322</w>
+      <h>175</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Assignement
+--
++variable: String
++expression: Expression&lt;T&gt;
+--
++Assignement(String newVariable, Expression&lt;T&gt; newExpression): ctor
++setVariable(String newVariable): void
++getVariable(): String
++setExpression(Expression&lt;T&gt; newExpression): void
++getExpression(): Expression&lt;T&gt;
++execute(): void
++reset(): void
++setProgram(Program program): void
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>917</y>
+      <w>273</w>
+      <h>105</h>
+    </coordinates>
+    <panel_attributes>/worms.model.programs.parser::BasicExpression/
+--
++value: T
+--
++hasAsSubExpression(Expression&lt;T&gt; expression): boolean
++getNbOperands(): int
++isMutable(): boolean
++equals(Object other): boolean
++toString(): String
++getValue(): T
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>693</x>
+      <y>1071</y>
+      <w>378</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>/worms.model.programs.parser::BinaryExpression/
+--
++operandLeft: Expression&lt;T&gt;
++operandRight: Expression&lt;T&gt;
+--
++BinaryExpression(Expression&lt;T&gt; operandLeft, Expression&lt;T&gt; operandRight): ctor
++getNbOperands(): int
++setOperandAt(int index, Expression&lt;T&gt; operand): void
++setProgram(Program program): void
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>399</x>
+      <y>931</y>
+      <w>273</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>/worms.model.programs.parser::ComposedExpression/
+--
+--
++hasAsSubExpression(Expression&lt;T&gt; expression): boolean
++isMutable(): boolean
++equals(Object other): boolean
++toString(): String
++setOperandAt(int index, Expression&lt;T&gt; operand): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>665</x>
+      <y>1337</y>
+      <w>385</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Division
+--
+--
++Division(Expression&lt;Double&gt; operandLeft, Expression&lt;Double&gt; operandRight): ctor
++evaluate(): Literal&lt;?&gt;
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>182</x>
+      <y>637</y>
+      <w>273</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>/worms.model.programs.parser::Expression/
+--
++program: Program
++parentExpression: Expression&lt;T&gt;
++holder: Statement
+--
++hasAsSubExpression(Expression&lt;T&gt; expression): boolean
++evaluate(): Literal&lt;?&gt;
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2261</x>
+      <y>231</y>
+      <w>343</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Fire
+--
++propulsion: Expression&lt;Double&gt;
+--
++Fire(IActionHandler newHandler, Expression&lt;Double&gt; newPropulsion): ctor
++getPropulsion(): Expression&lt;Double&gt;
++setPropulsion(Expression&lt;Double&gt; newPropulsion): void
++execute(): void
++reset(): void
++setProgram(Program program): void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2072</x>
+      <y>686</y>
+      <w>441</w>
+      <h>175</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::IfElse
+--
++condition: Expression&lt;Boolean&gt;
++bodyIf: Statement
++bodyElse: Statement
+--
++IfElse(Expression&lt;Boolean&gt; newCondition, Statement newBodyIf, Statement newBodyElse): ctor
++setCondition(Expression&lt;Boolean&gt; newCondition): void
++getCondition(): Expression&lt;Boolean&gt;
++setBodyIf(Statement newBodyIf): void
++getBodyIf(): Statement
++setBodyElse(Statement newBodyElse): void
++getBodyELse(): Statement
++execute(): void
++setProgram(Program program): void
++reset(): void
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>175</x>
+      <y>1281</y>
+      <w>224</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::IsWorm
+--
+--
++IsWorm(Expression&lt;Worm&gt; newOperand): ctor
++evaluate(): Literal&lt;?&gt;
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2562</x>
+      <y>546</y>
+      <w>189</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Jump
+--
+--
++Jump(IActionHandler newHandler): ctor
++execute(): void
++setProgram(Program program): void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>1071</y>
+      <w>175</w>
+      <h>105</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Literal
+--
+--
++Literal(T newValue): ctor
++setValue(T newValue): void
++isMutable(): boolean
++toString(): String
++equals(Object other): boolean
++evaluate(): Literal&lt;?&gt;
++setProgram(Program program): void
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2051</x>
+      <y>266</y>
+      <w>189</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Move
+--
+--
++Move(IActionHandler newHandler): ctor
++execute(): void
++setProgram(Program program): void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>903</x>
+      <y>1281</y>
+      <w>413</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Multiplication
+--
+--
++Multiplication(Expression&lt;Double&gt; operandLeft, Expression&lt;Double&gt; operandRight): ctor
++evaluate(): Literal&lt;?&gt;
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2583</x>
+      <y>413</y>
+      <w>315</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Print
+--
++message: Expression&lt;?&gt;
+--
++Print(IActionHandler newHandler, Expression&lt;?&gt; newMessage): ctor
++setMessage(Expression&lt;?&gt; newMessage): void
++getMessage(): Expression&lt;?&gt;
++execute(): void
++setProgram(Program program): void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>7</x>
+      <y>1218</y>
+      <w>168</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Self
+--
+--
++Self(): ctor
++evaluate(): Literal&lt;Worm&gt;
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1309</x>
+      <y>525</y>
+      <w>294</w>
+      <h>175</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Sequence
+--
++listOfStatements = new ArrayList&lt;Statement&gt;(): List&lt;Statement&gt;
+--
++Sequence(List&lt;Statement&gt; newListOfStatements): ctor
++addStatement(Statement newStatement): void
++getListOfStatements(): List&lt;Statement&gt;
++execute(): void
++setProgram(Program program): void
++reset(): void
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2380</x>
+      <y>406</y>
+      <w>182</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Skip
+--
+--
++Skip(IActionHandler newHandler): ctor
++execute(): void
++setProgram(Program program): void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1799</x>
+      <y>364</y>
+      <w>203</w>
+      <h>133</h>
+    </coordinates>
+    <panel_attributes>/worms.model.programs.parser::Statement/
+--
++program: Program
++parent: Statement
++isDone = false: boolean
+--
++setParent(Statement newParent): void
++setProgram(Program program): void
++getMainStatement(): Statement
++execute(): void
++reset(): void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2618</x>
+      <y>658</y>
+      <w>231</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::ToggleWeapon
+--
+--
++ToggleWeapon(IActionHandler newHandler): ctor
++execute(): void
++setProgram(Program program): void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>2702</x>
+      <y>280</y>
+      <w>329</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Turn
+--
++angle: Expression&lt;Double&gt;
+--
++Turn(IActionHandler newHandler, Expression&lt;Double&gt; newAngle): ctor
++getAngle(): Expression&lt;Double&gt;
++setAngle(Expression&lt;Double&gt; newAngle): void
++execute(): void
++setProgram(Program program): void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>875</x>
+      <y>511</y>
+      <w>245</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Type
+--
++expression: Expression&lt;T&gt;
+--
++Type(): ctor
++Type(Expression&lt;T&gt; newExpression): ctor
++getExpression(): Expression&lt;T&gt;
++setExpression(Expression&lt;T&gt; newExpression): void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>259</x>
+      <y>1078</y>
+      <w>252</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>/worms.model.programs.parser::UnaryExpression/
+--
++operand: Expression&lt;T&gt;
+--
++UnaryExpression(Expression&lt;T&gt; newOperand): ctor
++getNbOperands(): int
++setOperandAt(int index, Expression&lt;T&gt; operand): void
++setProgram(Program program): void
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>630</x>
+      <y>756</y>
+      <w>273</w>
+      <h>147</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::VariableAccess
+--
++variable: String
+--
++VariableAccess(String variable): ctor
++evaluate(): Literal&lt;?&gt;
++getNbOperands(): int
++hasAsSubExpression(Expression&lt;T&gt; expression): boolean
++isMutable(): boolean
++equals(Object other): boolean
++toString(): String
++setProgram(Program program): void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1729</x>
+      <y>875</y>
+      <w>343</w>
+      <h>175</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::WhileLoop
+--
++condition: Expression&lt;Boolean&gt;
++body: Statement
+--
++WhileLoop(Expression&lt;Boolean&gt; newCondition, Statement newBody): ctor
++setCondition(Expression&lt;Boolean&gt; newCondition): void
++getCondition(): Expression&lt;Boolean&gt;
++setBody(Statement newBody): void
++getBody(): Statement
++execute(): void
++reset(): void
++setProgram(Program program): void
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>91</x>
+      <y>700</y>
+      <w>104</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>91;21;21;217</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>42</x>
+      <y>1001</y>
+      <w>35</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;21;70</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>49</x>
+      <y>1155</y>
+      <w>35</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>343</x>
+      <y>700</y>
+      <w>153</w>
+      <h>244</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;140;231</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>371</x>
+      <y>1008</y>
+      <w>62</w>
+      <h>83</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>49;21;21;70</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>651</x>
+      <y>1001</y>
+      <w>125</w>
+      <h>83</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;112;70</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>259</x>
+      <y>1141</y>
+      <w>56</w>
+      <h>147</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>49;21;21;140</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>588</x>
+      <y>1148</y>
+      <w>126</w>
+      <h>119</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>119;21;21;112</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>903</x>
+      <y>1155</y>
+      <w>69</w>
+      <h>139</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;56;126</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>826</x>
+      <y>1148</y>
+      <w>62</w>
+      <h>202</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>49;21;49;28;21;189</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1981</x>
+      <y>413</y>
+      <w>258</w>
+      <h>153</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;245;140</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1967</x>
+      <y>476</y>
+      <w>132</w>
+      <h>223</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;119;210</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1862</x>
+      <y>476</y>
+      <w>118</w>
+      <h>412</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;105;399</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1673</x>
+      <y>476</y>
+      <w>146</w>
+      <h>251</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>133;21;21;238</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1568</x>
+      <y>413</y>
+      <w>244</w>
+      <h>125</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>231;21;21;112</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2149</x>
+      <y>322</y>
+      <w>174</w>
+      <h>216</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>161;203;21;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2359</x>
+      <y>462</y>
+      <w>83</w>
+      <h>76</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;63;70;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2408</x>
+      <y>336</y>
+      <w>48</w>
+      <h>83</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;70;35;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2443</x>
+      <y>567</y>
+      <w>133</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;119;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2443</x>
+      <y>602</y>
+      <w>189</w>
+      <h>105</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;175;91</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2443</x>
+      <y>483</y>
+      <w>154</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;63;140;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>2443</x>
+      <y>350</y>
+      <w>273</w>
+      <h>224</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;210;259;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>329</x>
+      <y>1358</y>
+      <w>175</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Sqrt
+--
++Sqrt(Expression&lt;Worm&gt; newOperand): ctor
++evaluate(): Literal&lt;?&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>504</x>
+      <y>1428</y>
+      <w>203</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Getter
+--
++Getter(Expression&lt;Worm&gt; newOperand, Val value): ctor
++evaluate(): Literal&lt;?&gt;
+-value: val
+--
+{innerclass
+Val enum
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>987</x>
+      <y>1211</y>
+      <w>385</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Substraction
+--
+--
++Substraction(Expression&lt;Double&gt; operandLeft, Expression&lt;Double&gt; operandRight): ctor
++evaluate(): Literal&lt;Double&gt;
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1141</x>
+      <y>1120</y>
+      <w>385</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Compare
+--
+--
++Compare(Expression&lt;Double&gt; operandLeft, Expression&lt;Double&gt; operandRight, ComparesValue value): ctor
++evaluate(): Literal&lt;Double&gt;
+- value: ComparesValue
+--
+{innerclass
+ComparesValue enum
+innerclass}
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1141</x>
+      <y>1036</y>
+      <w>385</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Equality
+--
+--
++Equality(Expression&lt;Double&gt; operandLeft, Expression&lt;Double&gt; operandRight): ctor
++evaluate(): Literal&lt;Double&gt;
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1050</x>
+      <y>1036</y>
+      <w>104</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;42;91;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1050</x>
+      <y>1085</y>
+      <w>104</w>
+      <h>62</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;91;49</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>392</x>
+      <y>1141</y>
+      <w>42</w>
+      <h>224</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;35;217</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>462</x>
+      <y>1141</y>
+      <w>133</w>
+      <h>294</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;126;287</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>434</x>
+      <y>679</y>
+      <w>209</w>
+      <h>146</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;196;133</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>791</x>
+      <y>0</y>
+      <w>378</w>
+      <h>182</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Program
+--
+-text: String
+-handler: IActionHandler
+-parser: ProgramParser&lt;Expression&lt;?&gt;, Statement, Type&lt;?&gt;&gt;
+-globals: Map&lt;String, Type&lt;?&gt;&gt; 
+-mainStatement: Statement
+-worm: Worm
+-instructionNumber: int
+--
++Program(String text, IActionHandler handler)
++parse(): ParseOutCome&lt;?&gt;
++hasExceedNumberInstruction(): boolean
++execute(): void
++reset(): void
++interrupt(): void
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1148</x>
+      <y>126</y>
+      <w>664</w>
+      <h>251</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=0..1
+m2=0..1
+</panel_attributes>
+    <additional_attributes>21;21;651;238</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>952</x>
+      <y>350</y>
+      <w>35</w>
+      <h>174</h>
+    </coordinates>
+    <panel_attributes>
+m1=0 ..... *
+</panel_attributes>
+    <additional_attributes>21;161;21;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>819</x>
+      <y>259</y>
+      <w>287</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::ProgramParser
+--
+-factory: ProgramFactory&lt;E, S, T&gt;
+-globals: Map&lt;String, Type&lt;?&gt;&gt; 
+-mainStatement: Statement
+-error: List&lt;String&gt;
+--
++ProgramParser(ProgramFactory&lt;E, S, T&gt; factory: ctor
++Program(String text, IActionHandler handler)
++parse(): void
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>343</x>
+      <y>161</y>
+      <w>461</w>
+      <h>489</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..1
+</panel_attributes>
+    <additional_attributes>448;21;21;476</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>966</x>
+      <y>161</y>
+      <w>38</w>
+      <h>111</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..... 1
+</panel_attributes>
+    <additional_attributes>21;98;21;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1085</x>
+      <y>301</y>
+      <w>727</w>
+      <h>118</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..1
+</panel_attributes>
+    <additional_attributes>714;105;21;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1582</x>
+      <y>427</y>
+      <w>230</w>
+      <h>118</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=2..*
+r1=listOfStatements</panel_attributes>
+    <additional_attributes>217;21;21;105</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>434</x>
+      <y>644</y>
+      <w>958</w>
+      <h>125</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1
+</panel_attributes>
+    <additional_attributes>21;21;945;112</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>392</x>
+      <y>406</y>
+      <w>1420</w>
+      <h>244</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1
+r1=parentHolder</panel_attributes>
+    <additional_attributes>1407;21;21;231</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1820</x>
+      <y>476</y>
+      <w>41</w>
+      <h>412</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..1
+</panel_attributes>
+    <additional_attributes>28;21;21;399</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>434</x>
+      <y>658</y>
+      <w>1308</w>
+      <h>300</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1</panel_attributes>
+    <additional_attributes>21;21;1295;287</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1981</x>
+      <y>462</y>
+      <w>146</w>
+      <h>237</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..2
+</panel_attributes>
+    <additional_attributes>21;21;133;224</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>434</x>
+      <y>700</y>
+      <w>1651</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1
+</panel_attributes>
+    <additional_attributes>21;21;1638;91</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>273</x>
+      <y>224</y>
+      <w>2001</w>
+      <h>426</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1
+</panel_attributes>
+    <additional_attributes>21;413;1988;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>434</x>
+      <y>322</y>
+      <w>2281</w>
+      <h>342</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1
+</panel_attributes>
+    <additional_attributes>21;329;2268;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>441</x>
+      <y>427</y>
+      <w>2155</w>
+      <h>244</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1
+</panel_attributes>
+    <additional_attributes>21;231;2142;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>105</x>
+      <y>546</y>
+      <w>125</w>
+      <h>125</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..1
+</panel_attributes>
+    <additional_attributes>77;112;21;112;21;21;112;21;112;91</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1939</x>
+      <y>273</y>
+      <w>104</w>
+      <h>118</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..1
+</panel_attributes>
+    <additional_attributes>63;105;91;105;91;21;21;21;21;91</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>336</x>
+      <y>35</y>
+      <w>196</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Worm
+--
+-program: Program
+--
+                    zie ander UML
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>511</x>
+      <y>56</y>
+      <w>287</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=0..1
+</panel_attributes>
+    <additional_attributes>21;21;280;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>91</x>
+      <y>1372</y>
+      <w>224</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>worms.model.programs.parser::Search
+--
+--
++Search(Expression&lt;Worm&gt; newOperand): ctor
++evaluate(): Literal&lt;?&gt;
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>84</x>
+      <y>1141</y>
+      <w>182</w>
+      <h>238</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>175;21;21;231</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>280</x>
+      <y>700</y>
+      <w>34</w>
+      <h>391</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=  1
+</panel_attributes>
+    <additional_attributes>21;21;21;259;21;378</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>392</x>
+      <y>700</y>
+      <w>433</w>
+      <h>384</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=2
+</panel_attributes>
+    <additional_attributes>21;21;420;371</additional_attributes>
+  </element>
+</diagram>

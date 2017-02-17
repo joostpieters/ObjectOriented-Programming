@@ -1,0 +1,46 @@
+package worms.model.programs.parser.removed;
+
+import worms.model.programs.parser.Literal;
+import be.kuleuven.cs.som.annotate.*;
+
+/**
+ * A class of integer literals.
+ * 
+ * @version  2.0
+ * @author   Eric Steegmans
+ * @param <T>
+ */
+public class LiteralDouble extends Literal<Double> {
+
+	/**
+	 * Initialize this new integer literal with given value.
+	 *
+	 * @param  value
+	 *         The value for this new integer literal.
+	 * @post   The value of this new integer literal is equal to
+	 *         the given value.
+	 *       | new.getValue() == value
+	 */
+
+	public LiteralDouble(Double value) {
+		super(value);
+	}
+	/**
+	 * Initialize this new integer literal with value 0.
+	 *
+	 * @effect This new integer literal is initialized with 0
+	 *         as its value.
+	 *       | this(0)
+	 */
+	public LiteralDouble() {
+		this(.0);
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		// TODO Auto-generated method stub
+		if(other.getClass() != this.getClass()) return false;
+		if(other == this) return true;
+		return getValue().equals(((LiteralBool) other).getValue());
+	}
+}

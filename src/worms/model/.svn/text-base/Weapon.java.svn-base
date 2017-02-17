@@ -1,0 +1,140 @@
+package worms.model;
+
+	/**
+	 * An abstract class Weapon 
+	 *  
+	 *  @version 1.0
+	 *  @author Minh Tri Tran 
+	 *  		1Ba informatica
+	 *  Code repository SVN:
+	 *  		http://sourceforge.net/p/projecttran/code/HEAD/tree/
+	
+	 */
+
+public abstract class Weapon {
+
+	protected Worm worm;
+	protected Projectile projectile;
+	protected boolean isTerminated;
+	protected int actionPointsCost;
+	
+	/**
+	 * Intialize this new Weapon with the given worm
+	 * 
+	 * @param 	worm
+	 * 			The worm that use this weapon
+	 * 
+	 * @post 	|new.getWorm() == worm
+	 * 
+	 */
+	public Weapon(Worm worm, int actionPointsCost)
+	{
+		setWorm(worm);
+		setActionPointsCost(actionPointsCost);
+	}
+	
+
+	public Worm getWorm()
+	{
+		return worm;
+	}
+	
+	
+	public int getActionPointsCost()
+	{
+		return actionPointsCost;
+	}
+	public void setActionPointsCost(int actionPointsCost)
+	{
+		this.actionPointsCost = actionPointsCost;
+	}
+	/**
+	 * Set the given worm as worm 
+	 * 
+	 * @param 	worm
+	 * 			The worm to set as
+	 * 
+	 * @post	|new.getWorm() == worm
+	 * 
+	 */
+	public void setWorm(Worm worm)
+	{
+		this.worm = worm;
+	}
+	
+	/**
+	 * Return the projectile
+	 */
+	public Projectile getProjectile()
+	{
+		return projectile;
+	}
+	/**
+	 * Set the given projectile as projectile, and given world as the world of this object 
+	 * 
+	 * @param 	world
+	 * 			The world that this object belongs to 
+	 * @param	projectile
+	 * 			The projectile to set as projectile for this weapon
+	 * 
+	 * @post	|new.getProjectile() == projectile
+	 * @post	|new.getProjectile().getWeapon() == this
+	 * @post	|new.world.getActiveProjectile() == projectile
+	 * 
+	 */
+	public void setProjectile(Projectile projectile)
+	{
+		this.projectile = projectile;
+		if(projectile != null) projectile.setWeapon(this);
+		getWorm().getWorld().setActiveProjectile(projectile);	
+	}
+	
+	/**
+	 * Remove the projectile of this weapon
+	 * 
+	 * @post	new.getProjectile() == null
+	 * @post	old.getProjectile().getWeapon() == null
+	 * 
+	 * @throws	IllegalStateException
+	 * 			projectile == null
+	 * 
+	 */
+	public void removeProjectile()
+	{
+		if(projectile == null) throw new IllegalStateException();
+		
+		projectile.setWeapon(null);
+		projectile = null; 
+	}
+	
+	/**
+	 * Terminate this weapon
+	 * 
+	 * @post	old.getProjectile().isTerminated == true
+	 * @post	new.getProjectile() == null
+	 * @post	new.isTerminated == true
+	 * 
+	 */
+	public void terminate()
+	{
+		if(projectile != null && !projectile.isTerminated()) projectile.terminate();
+		projectile = null;
+		isTerminated = true;
+		worm = null;
+	}
+	
+	/**
+	 * Check whether this weapon is terminated
+	 * 
+	 * @return	Result == isTerminated
+	 */
+	public boolean isTerminated()
+	{
+		return isTerminated;
+	}
+	
+	public abstract String getName();
+	
+	
+	
+}

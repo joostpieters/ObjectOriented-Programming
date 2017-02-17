@@ -1,0 +1,950 @@
+package worms.model;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Random;
+
+import worms.gui.game.IActionHandler;
+import worms.model.programs.ParseOutcome;
+import worms.model.programs.ProgramParser;
+import worms.model.programs.ProgramParser.*;
+import worms.model.programs.parser.*;
+import be.kuleuven.cs.som.annotate.*;
+
+
+public class Facade implements IFacade {
+
+	/**
+	 * A class Facade which implements the unimplemented methods from IFacade
+	 *  
+	 *  @version 1.0
+	 *  @author Minh Tri Tran 
+	 *  		1Ba informatica
+	 *  Code repository SVN:
+	 *  		http://sourceforge.net/p/projecttran/code/HEAD/tree/
+
+	 */
+
+	/**
+	 * An empty default constructor for this Facade
+	 */
+	public Facade(){}
+
+	@Override
+	public void addEmptyTeam(World world, String newName) {
+		// TODO Auto-generated method stub
+		return;
+	}
+
+	@Override
+	public void addNewFood(World world) {
+		// TODO Auto-generated method stub
+		return;
+	}
+
+	/**
+	 * Add a new worm to the given world.
+	 * 
+	 * @param	world
+	 * 			The world to add a new worm.
+	 * 
+	 * @throws	ModelException(e)
+	 * 			If an IllegalArgumentException occurs throw ModelException.
+	 */
+	@Override
+	public void addNewWorm(World world, Program program) {
+		try
+		{
+			world.addNewWorm(program);
+			
+		}
+		catch(IllegalArgumentException | NullPointerException | IllegalStateException e)
+		{
+			//addNewWorm ? recursive ?
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Check whether a given worm can fall.
+	 * 
+	 * @param	worm
+	 * 			The worm to check if it can fall.
+	 * 
+	 * @return	|if(worm.getState() != State.TERMINATED && worm.getState() != State.UNDEFINED) then return worm.getState() != State.ADJACENT 
+	 *			|else if(worm.getState() != State.TERMINATED) then return !worm.getWorld().isAdjacent(worm.getX(), worm.getY(), worm.getRadius())
+	 *			|else then return false
+	 * 
+	 * @throws	ModelException(e)
+	 * 			If an IllegalArgumentException occurs throw ModelException.
+	 */
+	@Override
+	public boolean canFall(Worm worm) {
+		// TODO Auto-generated method stub
+		try
+		{
+			if(worm.getState() != State.TERMINATED && worm.getState() != State.UNDEFINED) return worm.getState() != State.ADJACENT;
+			else if(worm.getState() != State.TERMINATED && worm.getState() == State.UNDEFINED)
+			{
+				worm.setState(worm.getWorld().isAdjacent(worm.getRealX(), worm.getRealY(), worm.getRealRadius()) ? State.ADJACENT : State.PASSABLE);
+				return worm.getState() != State.ADJACENT;
+			}
+			else return false;
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Check whether a given worm can move.
+	 * 
+	 * @param	worm
+	 * 			The worm to check if it can move.
+	 * 
+	 * @return |return worm.canMove()
+	 * 
+	 * @throws	ModelException(e)
+	 * 			If an IllegalArgumentException occurs throw ModelException.
+	 */
+	@Override
+	public boolean canMove(Worm worm) {
+		// TODO Auto-generated method stub
+		return worm.canMove();
+	}
+
+	/**
+	 * Check whether a given worm can turn.
+	 * 
+	 * @param	worm
+	 * 			The worm to check if it can turn.
+	 * @param	angle
+	 * 			The angle to test if that worm can turn over the angle.
+	 * 
+	 * @pre		|(worm != null) == true
+	 * 
+	 * @return	|return worm.canTurn(angle)
+	 * 
+	 * @throws	ModelException(e)
+	 * 			If an IllegalArgumentException occurs throw ModelException.
+	 */
+	@Override
+	public boolean canTurn(Worm worm, double angle) {
+		// TODO Auto-generated method stub
+		assert worm != null;
+		return worm.canTurn(angle);
+	}
+
+	@Override
+	public Food createFood(World world, double x, double y) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Create a new world with the given width, given height, passable map, and random
+	 * 
+	 * @param	width
+	 * 			The width for this new world
+	 * @param	height
+	 * 			The height for this new world
+	 * @param	passableMap
+	 * 			The map indicating on each pixel whether it is terrain or not
+	 * @param	random
+	 * 			A random generator to generate randomized value
+	 * 
+	 * @return 	|return new World(width, height, passableMap, random)
+	 * 
+	 * @throws	ModelException(e)
+	 * 			If an IllegalArgumentException occurs throw ModelException.
+	 */
+	@Override
+	public World createWorld(double width, double height,
+			boolean[][] passableMap, Random random) {
+		// TODO Auto-generated method stub
+		return new World(width, height, passableMap, random);
+	}
+
+	/**
+	 * Create a new worm in the given world, with given x, y, direction, radius and name
+	 * 
+	 * @param	world
+	 * 			The world to which this new worm belongs to
+	 * @param	x
+	 * 			The x-position of this new worm
+	 * @param	y
+	 * 			The y-position of this new worm
+	 * @param	direction
+	 * 			The direction to which this new worm is facing
+	 * @param	radius
+	 * 			The radius of this new worm
+	 * @param	name
+	 * 			The name of this new worm
+	 *
+	 * @return 	|return new Worm(world, x, y, direction, radius, name)
+	 * 
+	 * @throws	ModelException(e)
+	 * 			If an IllegalArgumentException occurs throw ModelException.
+	 */
+	@Override
+	public Worm createWorm(World world, double x, double y, double direction,
+			double radius, String name, Program program) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return new Worm(world, x, y, direction, radius, name, program);
+		}
+		catch(IllegalArgumentException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Let the given worm fall down
+	 * 
+	 * @param	worm
+	 * 			The worm that will fall
+	 *
+	 * @throws	ModelException(e)
+	 * 			If an IllegalArgumentException occurs throw ModelException.
+	 */
+	@Override
+	public void fall(Worm worm) {
+		// TODO Auto-generated method stub
+		try
+		{
+			if(canFall(worm)) worm.fall();
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Return the current action points of the given worm.
+	 * 
+	 */
+	@Override
+	public int getActionPoints(Worm worm) {
+		// TODO Auto-generated method stub
+		if(worm == null) return 0;
+		return worm.getActionPoints();
+	}
+
+	/**
+	 * Return the active projectile in the given world
+	 *  
+	 */
+	@Override
+	public Projectile getActiveProjectile(World world) {
+		// TODO Auto-generated method stub
+		return world.getActiveProjectile();
+	}
+
+	/**
+	 * Return the current worm in the given world
+	 * 
+	 */
+	@Override
+	public Worm getCurrentWorm(World world) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return world.getCurrentWorm();
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	@Override
+	public Collection<Food> getFood(World world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Return the current hit points of the given worm.
+	 * 
+	 */
+	@Override
+	public int getHitPoints(Worm worm) {
+		// TODO Auto-generated method stub
+		return worm.getHitPoints();
+	}
+
+	/**
+	 * Return the position after a possible jump of the given projectile
+	 * 
+	 * @param	projectile	
+	 * 			The projectile to get its jumpStep
+	 * @param	t
+	 * 			The time during the jump
+	 * 
+	 * @return	|return projectile.jumpStep(t)
+	 */
+	@Override
+	public double[] getJumpStep(Projectile projectile, double t) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return projectile.jumpStep(t);
+		}
+		catch(NullPointerException | IllegalArgumentException | IllegalStateException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Return the position after a possible jump of the given worm
+	 * 
+	 * @param	worm	
+	 * 			The worm to get its jumpStep
+	 * @param	t
+	 * 			The time during the jump
+	 * 
+	 * @return	|return worm.jumpStep(t)
+	 */
+	@Override
+	public double[] getJumpStep(Worm worm, double t) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return worm.jumpStep(t);
+		}
+		catch(NullPointerException | IllegalArgumentException | IllegalStateException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Return the jump time of a given projectile
+	 * 
+	 * @param 	Projectile
+	 * 			The projectile to get its jump time
+	 * @param	timeStep
+	 * 			An elementary time interval during which you may assume that the projectile will not completely move through a piece of impassable terrain.  	
+	 *
+	 * @return	|return projectile.jumpTime()
+	 * 			
+	 */
+	@Override
+	public double getJumpTime(Projectile projectile, double timeStep) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return (double) projectile.jumpTime(timeStep).i;
+		}
+		catch (NullPointerException | IllegalStateException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Return the jump time of a given worm
+	 * 
+	 * @param 	worm
+	 * 			The worm to get its jump time
+	 * @param	timeStep
+	 * 			An elementary time interval during which you may assume that the projectile will not completely move through a piece of impassable terrain.  	
+	 *
+	 * @return	|return worm.jumpTime()
+	 * 			
+	 */
+	@Override
+	public double getJumpTime(Worm worm, double timeStep) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return worm.jumpTime(timeStep).i;
+		}
+		catch (NullPointerException | IllegalStateException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Return the mass of the given worm.
+	 * 
+	 */
+	@Override
+	public double getMass(Worm worm) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return worm.getMass();
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Return the maximum action points of the given worm.
+	 * 
+	 */
+	@Override
+	public int getMaxActionPoints(Worm worm) {
+		// TODO Auto-generated method stub
+		if(worm == null ) return 0;
+		return worm.getMaxActionPoints();
+	}
+
+	/**
+	 * Return the maximum hit points of the given worm.
+	 * 
+	 */
+	@Override
+	public int getMaxHitPoints(Worm worm) {
+		// TODO Auto-generated method stub
+		return worm.getMaxHitPoints();
+	}
+
+	/**
+	 * Return the minimal radius of the given worm.
+	 * 
+	 */
+	@Override
+	public double getMinimalRadius(Worm worm) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return Worm.getMinimalRadius();
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Return the name of the given worm.
+	 * 
+	 */
+	@Override
+	public String getName(Worm worm) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return worm.getName();
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Return the orientation of the given worm.
+	 * 
+	 */
+	@Override
+	public double getOrientation(Worm worm) {
+		// TODO Auto-generated method stub
+		assert (worm != null);
+		return worm.getOrientation();
+	}
+
+	@Override
+	public double getRadius(Food food) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/**
+	 * Return the orientation of the given projectile.
+	 * 
+	 */
+	@Override
+	public double getRadius(Projectile projectile) {
+		// TODO Auto-generated method stub
+		return projectile.getRadius();
+	}
+
+	/**
+	 * Return the radius of the given worm.
+	 * 
+	 */
+	@Override
+	public double getRadius(Worm worm) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return worm.getRadius();
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Return the selected weapon of the given worm.
+	 * 
+	 */
+	@Override
+	public String getSelectedWeapon(Worm worm) {
+		// TODO Auto-generated method stub
+		if(worm.getSelectedWeapon() == null) return null;
+		return worm.getSelectedWeapon().getName();
+	}
+
+	@Override
+	public String getTeamName(Worm worm) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Return the winner of a game in the given world
+	 * 
+	 * @param	world
+	 * 			The world to get the winner
+	 * 
+	 * @return	|if(getWorms(world).size() > 0)
+	 * 			|	return ((Worm) getWorms(world).toArray()[0]).getName()
+	 * 			|else	
+	 * 			|	return null
+	 */
+	@Override
+	public String getWinner(World world) {
+		// TODO Auto-generated method stub
+		return getWorms(world).size() > 0 ? ((Worm) getWorms(world).toArray()[0]).getName() : null;
+	}
+
+	/**
+	 * Return a collection containing all the worms of the given world.
+	 * 
+	 */
+	@Override
+	public Collection<Worm> getWorms(World world) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return world.getWorms();
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	@Override
+	public double getX(Food food) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/**
+	 * Return the x-position of the given projectile.
+	 * 
+	 */
+	@Override
+	public double getX(Projectile projectile) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return projectile.getX();
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Return the x-position of the given worm.
+	 * 
+	 */
+	@Override
+	public double getX(Worm worm) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return worm.getX();
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	@Override
+	public double getY(Food food) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/**
+	 * Return the y-position of the given projectile.
+	 * 
+	 */
+	@Override
+	public double getY(Projectile projectile) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return projectile.getY();
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Return the y-position of the given worm.
+	 * 
+	 */
+	@Override
+	public double getY(Worm worm) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return worm.getY();
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	@Override
+	public boolean isActive(Food food) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/**
+	 * Check whether the given projectile is active
+	 * 
+	 * @param 	projectile
+	 * 			The projectile to check
+	 * 
+	 * @return	|return projectile.getWeapon() != null;
+	 */
+	@Override
+	public boolean isActive(Projectile projectile) {
+		// TODO Auto-generated method stub
+		//activeProjectile ?
+
+		return !projectile.isTerminated;
+	}
+
+	/**
+	 * Check whether a given area in a given world is adjacent to impassable terrain and located on passable terrrain
+	 * -
+	 * @param 	world	
+	 * 			The world in which the area will be checked
+	 * @param	x
+	 * 			The x-position of the center of the area
+	 * @param	y
+	 * 			The y-position of the center of the area
+	 * @param	radius
+	 * 			The radius of the area
+	 * 
+	 * @post	|return world.passableAndAdjacent(world.convertToReal(new Vector(x,y)).getX(), world.convertToReal(new Vector(x,y)).getY(), radius*world.getScale() ) ;
+	 * 
+	 */
+	@Override
+	public boolean isAdjacent(World world, double x, double y, double radius) {
+		// TODO Auto-generated method stub
+		return world.isAdjacent(world.convertToReal(new Vector(x,y)).getX(), world.convertToReal(new Vector(x,y)).getY(), radius*world.getScale() ) ;
+	}
+
+	/**
+	 * Check whether the given worm is alive
+	 * 
+	 * @param 	worm
+	 * 			The given worm to check if its alive
+	 * 
+	 * @return	|Return worm.isAlive()
+	 */
+	@Override
+	public boolean isAlive(Worm worm) {
+		// TODO Auto-generated method stub
+		try
+		{
+			return !worm.isTerminated();
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Check whether this game is over
+	 * 
+	 * @param 	world
+	 * 			The world in which to test if the game is over
+	 * @return	Return world.getWorms().size() <= 1
+	 */
+	@Override
+	public boolean isGameFinished(World world) {
+		// TODO Auto-generated method stub
+		return world.getWorms().size() <= 1;
+	}
+
+	/**
+	 * Check whether a given area in the given world is impassable
+	 * 
+	 * @param	world
+	 * 			The world in which the area will be checked
+	 * @param	x
+	 * 			The x-position of the center of the area
+	 * @param	y
+	 * 			The y-position of the center of the area
+	 * @param	radius
+	 * 
+	 * @post	|return world.isImpassable(world.convertToReal(new Vector(x,y)).getX(), world.convertToReal(new Vector(x,y)).getY(), radius*world.getScale())
+	 */
+	@Override
+	public boolean isImpassable(World world, double x, double y, double radius) {
+		// TODO Auto-generated method stub
+		return world.isImpassable(world.convertToReal(new Vector(x,y)).getX(), world.convertToReal(new Vector(x,y)).getY(), radius*world.getScale());
+	}
+
+	/**
+	 * Jump the given projectile 
+	 * 
+	 * @param	projectile
+	 * 			The projectile to jump
+	 * @param	timeStep
+	 *			An elementary time interval during which you may assume that the projectile will not completely move through a piece of impassable terrain.  	
+	 * 		  	
+	 * @post	| worm.(new.getName() == newName
+	 * 			
+	 */
+	@Override
+	public void jump(Projectile projectile, double timeStep) {
+		// TODO Auto-generated method stub
+		try
+		{
+			projectile.jump(timeStep);
+		}
+		catch(NullPointerException | IllegalStateException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * Jump the given worm
+	 * 
+	 * @param	worm
+	 * 			The worm to jump
+	 * @param	timeStep
+	 *			An elementary time interval during which you may assume that the worm will not completely move through a piece of impassable terrain.  	
+	 * 
+	 * @post	| worm.jump()
+	 * 
+	 */
+	@Override
+	public void jump(Worm worm, double timeStep) {
+		// TODO Auto-generated method stub
+		try
+		{
+			worm.jump(timeStep);
+		}
+		catch(NullPointerException | IllegalStateException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+
+	/**
+	 * Move the given worm
+	 * 
+	 * @param	worm
+	 * 			The worm to move
+	 * 		  	
+	 * @post	| worm.move()
+	 * 			
+	 */
+	@Override
+	public void move(Worm worm) {
+		// TODO Auto-generated method stub
+		try
+		{
+			worm.move(); 
+		}
+		catch(NullPointerException | IllegalArgumentException | IllegalStateException e)
+		{
+			throw new ModelException(e);
+		}
+
+	}
+
+	/**
+	 * Rename the given worm with the given name
+	 * 
+	 * @param	worm
+	 * 			The worm to rename
+	 * @param	newName
+	 * 			The new name for the given worm
+	 * 		  	
+	 * @post	| worm.(new.getName() == newName
+	 * 			
+	 */
+	@Override
+	public void rename(Worm worm, String newName) {
+		// TODO Auto-generated method stub
+		try
+		{
+			worm.setName(newName);
+		}
+		catch(NullPointerException | IllegalArgumentException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	@Override
+	public void selectNextWeapon(Worm worm) {
+		// TODO Auto-generated method stub
+		worm.selectNextWeapon();
+	}
+
+
+	/**
+	 * Set the radius of the given worm with the given radius
+	 *  
+	 * @param	worm
+	 * 			The worm to change its radius
+	 * @param	newRadius	
+	 * 			The new radius for the given worm
+	 * 		  	
+	 * @post	|	worm.(new.getRadius()) == newRadius
+	 * 			
+	 */
+	@Override
+	public void setRadius(Worm worm, double newRadius) {
+		// TODO Auto-generated method stub
+		try
+		{
+			worm.setRadius(newRadius);
+		}
+		catch(IllegalArgumentException | NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	/**
+	 * The given worm will shoot with the given propulsion
+	 * 
+	 * @param	worm
+	 * 			The world that will shoot
+	 * @param 	yield
+	 * 			The propulsion of shoot
+	 * 		  	
+	 * @post	| worm.shoot(yield);
+	 * 
+	 */
+	@Override
+	public void shoot(Worm worm, int yield) {
+		// TODO Auto-generated method stub
+		try
+		{
+			worm.shoot(yield);
+		}
+		catch(IllegalStateException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+
+	/**
+	 * Start the game in the given world
+	 * 
+	 * @param	world
+	 * 			The world which will start its game
+	 * 		  	
+	 * @post	| if(worm.(this.getCurrentWorm(world).size()) > 0)
+	 * 				worm.(new.getCurrentWorm(world)) == (Worm)getWorms(world).toArray()[0]
+	 * 			| else 
+	 * 				worm.(new.getCurrentWorm(world)) == null
+	 * 			
+	 */
+	@Override
+	public void startGame(World world) {
+		// TODO Auto-generated method stub
+		try
+		{
+			world.startNextTurn();
+			//world.setCurrentWorm(getWorms(world).size() > 0 ?(Worm)getWorms(world).toArray()[0] : null);	
+		}
+		catch(NullPointerException e)
+		{
+			throw new ModelException(e);
+		}
+	}
+
+	@Override
+	public void startNextTurn(World world) {
+		// TODO Auto-generated method stub
+		world.startNextTurn();
+	}
+
+	/**
+	 * Turn the given worm in the given angle
+	 * 
+	 * @param	worm
+	 * 			The worm that will turn
+	 * @param	angle
+	 * 		  	The angle to turn
+	 * @pre		|(worm!=null) == true
+	 * 
+	 * @pre		|canTurn(worm, angle) == true
+	 * 
+	 * @post	|worm.turn(angle)
+	 * 			
+	 */
+	@Override
+	public void turn(Worm worm, double angle) {
+		// TODO Auto-generated method stub
+		assert worm!=null;
+		assert canTurn(worm, angle);
+		worm.turn(angle);
+	}
+
+	@Override
+	public ParseOutcome<?> parseProgram(String programText,
+			IActionHandler handler) {
+		// TODO Auto-generated method stub
+		Program program = new Program(programText, handler);
+		return program.parse();
+	}
+
+	@Override
+	public boolean hasProgram(Worm worm) {
+		// TODO Auto-generated method stub
+		return worm.hasProgram();
+	}
+
+	@Override
+	public boolean isWellFormed(Program program) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+
+
+
+
+}

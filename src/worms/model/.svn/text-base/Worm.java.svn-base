@@ -1,0 +1,853 @@
+package worms.model;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.PriorityQueue;
+
+import be.kuleuven.cs.som.annotate.*;
+import be.kuleuven.cs.som.taglet.*;
+import worms.util.Util;
+
+
+/**
+ *  A class Worm, containing all its characteristics such as mass, radius ... and methods to perform actions.
+ *  
+ *  @version 1.0
+ *  @author Minh Tri Tran 
+ *  		1Ba informatica
+ *  Code repository SVN:
+ *  		http://sourceforge.net/p/projecttran/code/HEAD/tree/
+ * 		
+ */
+
+public class Worm extends Entity{
+
+	/**
+	 * Default name set to a worm created with the default constructor.
+	 */
+	public static final String DEFAULT_NAME = "Unknown";
+	/**
+	 * Minimal radius that each for can have.
+	 */
+	public static final double MIN_RADIUS = .25; 
+	/**
+	 * Maximal radius that each worm can have.
+	 */
+	public static final double MAX_RADIUS = MIN_RADIUS*Math.pow(1.1, 100);
+
+	private Bazooka bazooka = new Bazooka(this);
+	private  Rifle rifle = new Rifle(this);
+	private Weapon selectedWeapon = rifle;
+	private String name;
+	private int maxActionPoints;
+	private int actionPoints;
+	private int maxHitPoints;
+	private int hitPoints;
+
+	private State state = State.UNDEFINED; 
+
+	protected Program program;
+
+	private static String pattern = "^[A-Z][A-Za-z0-9\\s\\\"\\']+";
+
+	public boolean hasProgram()
+	{
+		return program != null;
+	}
+
+	/**
+	 * Initialize this new worm at location (0,0), with an orientation of 0, with the minimal radius, the default name as name and belongs to no world. 
+	 * 
+	 * @effect	This new worm is initialized with x and y location 0, with an orientation of 0, the minimal radius
+	 * 			, the default name in no world.
+	 * 			|this(null,0,0,0, Worm.getConstants.MIN_RADIUS(), Worm.getConstants.DEFAULT_NAME())
+	 */
+	public Worm(World world)
+	{
+		this(world, 0.0, 0.0, 0.0, MIN_RADIUS, DEFAULT_NAME, null);
+	}
+
+	/**
+	 * Initialize this new worm at the given location (x,y), with the given orientation, given radius
+	 * and the given name in the given world. 
+	 * 
+	 * @param	world
+	 * 			The world to create this new worm within
+	 * @param	x
+	 * 			The x location for this new worm.		
+	 * @param	y
+	 * 			The y location for this new worm.
+	 * @param	orientation
+	 * 			The orientation for this new worm.
+	 * @param	radius
+	 * 			The radius for this new worm.
+	 * @param	name
+	 * 			The name for this new worm.
+	 * 
+	 * @post	The world of this new worm is equals the given world
+	 * 			|new.getWorld() == world
+	 * @post 	The location of this new worm is equals the given (x,y)-location.
+	 * 			|new.getX() == x && new.getY() == y
+	 * @post 	The orientation of this new worm is equals the given orientation.
+	 * 			|new.getOrientation() == orientation
+	 * @post 	The radius of this new worm is equals the given radius.
+	 * 			|new.getRadius() == radius
+	 * @post 	The name of this new worm is equals the given name.
+	 * 			|new.getName() == name
+	 * 
+	 */
+	public Worm (World world, double x, double y, double orientation, double radius, String name, Program program)
+	{
+		super(world, x, y, orientation, 1062);
+		this.setRadius(radius);
+		this.setName(name);
+		this.setProgram(program);
+
+		//Explicit initialization
+		this.setActionPoints(this.getMaxActionPoints());
+		this.setHitPoints(this.getMaxHitPoints());
+		setForce();
+	}
+
+
+	//Inspectors
+
+	public Program getProgram()
+	{
+		return program;
+	}
+	/**
+	 * Return the bazooka weapon of this worm
+	 *
+	 */
+	@Basic
+	public Bazooka getBazooka()
+	{
+		return bazooka;
+	}
+
+	/**
+	 * Return the rifle weapon of this worm
+	 *
+	 */
+	@Basic
+	public Rifle getRifle()
+	{
+		return rifle;
+	}
+	/**
+	 * Return the state of this worm.
+	 * 
+	 */
+	@Basic
+	public State getState()
+	{
+		return state;
+	}
+
+	/**
+	 * Return the name of this worm.
+	 * 
+	 */
+	@Basic
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * Return the current action points of this worm.
+	 * 
+	 */
+	@Basic
+	public int getActionPoints()
+	{
+		return actionPoints;
+	}
+
+	/**
+	 * Return the maximal action points of this worm.
+	 * 
+	 */
+	@Basic
+	public int getMaxActionPoints()
+	{
+		return maxActionPoints;
+	}
+
+	/**
+	 * Return the minimal radius of all worms.
+	 * 
+	 */
+	@Basic
+	public static double getMinimalRadius()
+	{
+		return MIN_RADIUS;
+	}
+
+	/**
+	 * Return the the maximal hit points of this worm
+	 * 
+	 */
+	public int getMaxHitPoints()
+	{
+		return maxHitPoints;
+	}
+
+	/**
+	 * Return the current hit points of this worm
+	 * 
+	 */
+	public int getHitPoints()
+	{
+		return hitPoints;
+	}
+
+	/**
+	 * Return the selected weapon
+	 * @return
+	 */
+	public Weapon getSelectedWeapon()
+	{
+		return selectedWeapon;
+	}
+
+	//Mutators + checkers
+
+
+	public void setProgram(Program program)
+	{
+		this.program = program;
+		if(program != null) program.setWorm(this);
+	}
+	/**
+	 * Set the state of this worm with the given state
+	 * 
+	 * @param 	s
+	 * 		 	The state for this worm
+	 * 
+	 * @post	The new state for this worm is equal to the given state, unless the given state is null then set the state as UNDEFINED.
+	 * 			|if(s == null) new.getState() == State.UNDEFINED
+	 * 			|else	new.getState() == s
+	 * 
+	 */
+	public void setState(State s)
+	{
+		if(s == null) this.state = State.UNDEFINED;
+		this.state = s;
+	}
+
+	/**
+	 * Set the world of this worm with the given world
+	 * 
+	 * @param 	world
+	 * 		 	The world which this worm belongs to
+	 * 
+	 * @post	The new world of this worm is equal to the given world.
+	 * 			|new.getWorld() == world
+	 *
+	 * @post   The last worm in the list of the world is equal to this worm
+	 *      	|(new world).getWorms().get((new world).getWorms().size()) == this
+	 */
+	@Override
+	public void setWorld(World world)
+	{
+		this.world = world;
+		if(world != null) world.addWorm(this);
+	}
+
+	/**
+	 * Set the radius of this worm with the given radius.
+	 * 
+	 * @param	radius
+	 * 		  	The new radius for this worm.
+	 * 
+	 * @post	If the given radius is considered as a valid radius, the radius of this worm
+	 * 			is equal to the given radius.
+	 * 			|if(isValidRadius(radius)) then
+	 * 			|new.getRadius() == radius	
+	 * 	
+	 * @throws IllegalArgumentException
+	 *         The given radius is not valid
+	 *       	| !isValidRadius(radius) 
+	 * 			
+	 */
+
+	protected void setRadius(double radius) throws IllegalArgumentException
+	{
+		if(!isValidRadius(radius)) throw new IllegalArgumentException();
+		this.radius = radius;
+		super.setRealRadius();
+		this.setMass();
+	}
+
+	/**
+	 * Set the maximum hit points of this worm.
+	 * 
+	 * @post	The maximal hit points of this worm is equal to its mass rounded to the nearest number.
+	 * 			|new.getMaxHitPoints() == Math.round(mass)
+	 *
+	 */
+	private void setMaxHitPoints()
+	{
+		this.maxHitPoints  = (int)Math.round(mass);
+		this.setHitPoints(this.getHitPoints());
+	}
+
+	/**
+	 * Set the current hit points of this worm.
+	 * 
+	 * @param 	hitPoints
+	 * 			The current hit points for this worm
+	 * 
+	 * @post	The current hit points of this worm is equal to the given hit points
+	 * 			|new.getHitPoints() == hitPoints
+	 *
+	 */
+	public void setHitPoints(int hitPoints)
+	{
+		if(hitPoints > getMaxHitPoints())
+			this.hitPoints = getMaxHitPoints();
+		else if (hitPoints < 0)
+			this.hitPoints = 0;
+		else 
+			this.hitPoints = hitPoints;
+	}
+
+	/**
+	 * Set the maximum action points of this worm.
+	 * 
+	 * @post	The maximal action points of this worm is equal to its mass rounded to the nearest number.
+	 * 			|new.getMaxActionPoints() == Math.round(mass)
+	 *
+	 */
+	private void setMaxActionPoints()
+	{
+		this.maxActionPoints  = (int)Math.round(mass);
+		this.setActionPoints(this.getActionPoints());
+	}
+
+	/**
+	 * Set the current action points of this worm with the given action points.
+	 * 
+	 * @param 	actionPoints
+	 * 			 The new action points location for this worm.
+	 * 
+	 *  @post	If the given action points is a valid action points, the action points of this worm is equal to the given action points.
+	 * 			|if(isValidActionPoints(actionPoints) then
+	 *			|new.getActionPoints = actionPoints;	
+	 *	@post	If the given action points is not a valid action points,
+	 *  		the action points of this worm is equal to the maximal action points.
+	 * 			|if(!isValidActionPoints(actionPoints)) then
+				|new.getActionPoints = this.getMaxActionPOints()
+	 */
+	public void setActionPoints(int actionPoints)
+	{
+
+		this.actionPoints =  Util.fuzzyGreaterThanOrEqualTo(getMaxActionPoints(), actionPoints)? actionPoints: this.getMaxActionPoints();
+		if(actionPoints <=0 ) this.actionPoints = 0;
+	}
+
+	private static boolean isValidName(String name)
+	{
+		return name.matches(pattern);
+	}
+
+	private static boolean isValidRadius(double radius)
+	{
+		if(!Double.isNaN(radius)) return Util.fuzzyGreaterThanOrEqualTo(radius, MIN_RADIUS) && Util.fuzzyLessThanOrEqualTo(radius, MAX_RADIUS);
+		return false;
+	}
+
+	/**
+	 * Select the next weapon
+	 * 
+	 * @post	Set the rifle weapon as weapon if no weapon was equiped. If the selected weapon is equal to  the rifle, set the weapon as bazooka, and reversed.
+	 * 			|If( this.getSelectedWeapon() == null) new.getSelectedWeapon() == rifle
+	 * 			|else if (this.getSelectedWeapon() == rifle) new.getSelectedWeapon() = getBazooka()
+	 * 			|else	new.getSelectedWeapon() == getRifle()
+	 */
+	public void selectNextWeapon()
+	{
+		if(selectedWeapon == bazooka) selectedWeapon = rifle;
+		else  selectedWeapon = bazooka;
+	}
+
+
+
+
+	//Action methods + action checkers
+
+	/**
+	 * Check whether this worm can move in his orientation.
+	 * 
+	 * @return 	Return true if and only if their exist at least one possible move to move to, and the current action points are greater than the cost of this possible move.
+	 * 		   	|result == getPossibleMoves().size() > 1 && this.getActionPoints >= costMove(nbSteps)
+	 * 
+	 */
+	public boolean canMove() throws IllegalArgumentException
+	{
+		//cos0 + 4sin 0 = 1 smallest move
+		if(Util.fuzzyLessThanOrEqualTo(this.getActionPoints(), 1) && !Util.fuzzyEquals(this.getActionPoints(), 1)) return false;
+		Collection<Vector> possibleMoves = getPossibleMoves();
+		if(!hasOptimalMove(possibleMoves)) return false;
+
+		if(possibleMoves instanceof ArrayList) return false;
+		Vector optimalMove = (Vector)((PriorityQueue<Vector>) possibleMoves).poll();
+		if( Util.fuzzyGreaterThanOrEqualTo(actionPoints, costMove(optimalMove.getS()))) return true;
+		return false;
+	}
+
+	public boolean hasOptimalMove(Collection<Vector> possibleMoves)
+	{
+		return !possibleMoves.isEmpty();
+	}
+	public boolean canMoveWithRemainingActionPoints()
+	{
+		if(Util.fuzzyLessThanOrEqualTo(this.getActionPoints(), 1) && !Util.fuzzyEquals(this.getActionPoints(), 1)) return false;
+		Collection<Vector> possibleMoves = getPossibleMoves();
+		if(!hasOptimalMove(possibleMoves)) return true;
+		Vector optimalMove = (Vector)((PriorityQueue<Vector>) possibleMoves).poll();
+		if( Util.fuzzyGreaterThanOrEqualTo(actionPoints, costMove(optimalMove.getS()))) return true;
+		return false;
+	}
+
+	private int costMove(double angle) throws IllegalArgumentException
+	{
+		return (int)Math.round(Math.abs(Math.cos(angle))+ Math.abs(4*Math.sin(angle)));
+	}
+
+	/**
+	 * Move this worm in his orientation
+	 *  
+	 * @post 	If their exist at least one position to move to that is passable and adjacent to impassable terrain, move to the farest location with minimal divergence
+	 * 		 	|new.getOrientation() = getPossibleMoves().sort().get(getPossibleMoves().size()-1).getS()
+	 * 			|new.getX() == world.convertToScale(getPossibleMoves().sort().get(getPossibleMoves().size()-1)).getX()
+	 *			|new.getY() == world.convertToScale(getPossibleMoves().sort().get(getPossibleMoves().size()-1)).getY()
+	 * @post 	If all locations are not adjacent but their exist at least one passable none adjacent, move to it and fall down
+	 * 			|new.getOrientation == possibleMoves.get(1).getS()
+	 * 		 	|new.getX() == world.convertToScale(possibleMoves.get(1)).getX())
+	 *			|new.getY() == world.convertToScale(possibleMoves.get(1)).getY())
+	 *			|fall()
+	 * 
+	 * @throws 	IllegalArgumentException
+	 * 			Their are no location to move to, neither to fall from
+	 * 			|possibleMoves.size() < 1 || possibleMoves.size() <= 1 && possibleMoves.get(0) != null
+	 * 
+	 */
+	public void move() throws IllegalArgumentException, IllegalStateException
+
+	{
+		//zoals canMove()
+		Collection<Vector> possibleMoves = getPossibleMoves();
+
+		if(possibleMoves.size() <= 0) throw new IllegalStateException();
+
+		if(possibleMoves.getClass() == (new ArrayList<Vector>()).getClass())
+		{
+
+			this.turn(((ArrayList<Vector>) possibleMoves).get(0).getS() - getOrientation());
+			this.setX(world.convertToScale(((ArrayList<Vector>) possibleMoves).get(0)).getX());
+			this.setY(world.convertToScale(((ArrayList<Vector>) possibleMoves).get(0)).getY());
+			this.setRealVector();
+			this.setState(State.PASSABLE);
+			fall();
+			return;
+		}
+
+		Vector maxVector = null;
+		for(int i = 0; i < possibleMoves.size(); i++)
+		{
+			maxVector = (Vector)((PriorityQueue<Vector>) possibleMoves).poll();
+			if(Util.fuzzyGreaterThanOrEqualTo(this.getActionPoints(), costMove(maxVector.getS()))) break;
+		}
+
+		this.turn(maxVector.getS() - getOrientation());
+		this.setX(world.convertToScale(maxVector).getX());
+		this.setY(world.convertToScale(maxVector).getY());
+		this.setRealVector();
+		this.setState(State.ADJACENT);
+		this.setActionPoints( (this.getActionPoints() - this.costMove(maxVector.getS()) ) >= 0 ? this.getActionPoints() - this.costMove(maxVector.getS()) : 0);
+	}
+
+	/**
+	 * Check whether this worm can turn with the given angle.
+	 * 
+	 * @param 	angle
+	 * 		  	The angle to verify as a turnable move
+	 * 
+	 * @pre		The given angle is a valid orientation
+	 * 			isValidOrientation(angle)
+	 * 
+	 * @return 	Return true if and only if the current action points are greater than the cost of a possible turn.
+	 * 		   	|result ==  this.getActionPoints() >= costTurn(angle)
+	 */
+	public boolean canTurn(double angle)
+	{
+		assert super.isValidOrientation(angle);
+		return Util.fuzzyGreaterThanOrEqualTo(this.getActionPoints(), Worm.costTurn(angle));
+	}
+
+
+	private static int costTurn(double angle)
+	{
+		assert isValidOrientation(angle);
+
+		double fraction = 2*Math.PI / angle;	
+		return (int)Math.round(Math.abs(60.0/fraction));
+	}
+
+	/**
+	 * Turn this worm with the given angle.
+	 * 
+	 * @param 	angle
+	 * 		 	The angle to turn
+	 * 
+	 * @pre		The given angle is a valid orientation
+	 * 			|isValidOrientation(angle) == true
+	 * @pre		This worm can turn over the given angle.
+	 * 			|canMove(angle) == true
+	 * 
+	 * @post 	The new orientation of this worm is set to it current orientation incremented with the 
+	 * 		 	given angle.
+	 * 		 	|new.getOrientation(this.getOrientation()+angle)
+	 * 
+	 */
+	public void turn(double angle)
+	{
+		assert isValidOrientation(angle); 
+		assert canTurn(angle);
+
+		this.setOrientation(this.getOrientation()+angle);
+		this.setActionPoints((int) (this.getActionPoints() - Worm.costTurn(angle) ) );
+
+		if(getSelectedWeapon() != null && getSelectedWeapon().getProjectile() != null)
+		{
+			getSelectedWeapon().getProjectile().setX(getX()+Math.cos(getOrientation())*(getRadius()+.1));
+			getSelectedWeapon().getProjectile().setX(getY()+Math.sin(getOrientation())*(getRadius()+.1));
+		}
+	}
+
+	/**
+	 * Set the name of this worm with the given name.
+	 * 
+	 * @param	name
+	 * 		  	The new name for this worm.
+	 * 
+	 * @post	If the given name is considered as a valid name, the name of this worm
+	 * 			is equal to the given name.
+	 * 			|if(isValidName(name)) then
+	 * 			|new.getName() == name	
+	 * 
+	 * @throws	IllegalArgumentException
+	 * 			The given name is not a valid name.
+	 * 			|!isValidName(name) == true
+	 * 			
+	 */
+	public void setName(String name) throws IllegalArgumentException
+	{
+		if(!isValidName(name)) throw new IllegalArgumentException();
+		this.name =  name;
+	}
+
+
+	/**
+	 * Check whether this worm can jump.
+	 * 
+	 * @return 	Return true if and only if there are action points left and if the orientation set on a positive scale of 2PI is smaller or equal to PI.
+	 * 			|result == this.getActionPoints() > 0 && this.getSmallestPositiveAngle(this.getOrientation)<= Math.PI
+	 */
+	public boolean canJump()
+	{
+		return this.getActionPoints() > 0;
+	}
+
+	/**
+	 * @post	The new (x,y) location of this worm is equal to its (x,y) location after jumping.
+	 * 			|new.getX(jumpStep(jumpTime()[0])
+	 * 			|new.getY(jumpStep(jumpTime()[1])
+	 * 
+	 * @throws 	IllegalArgumentException
+	 * 			This worm cannot jump.
+	 * 			 |!canJump() == true
+	 */
+	public void jump(double timeStep) throws IllegalStateException
+	{
+		Tuple<Double, Worm> tupleJump = jumpTime(timeStep);
+		double timeJumping = tupleJump.i;
+
+		if(!canJump() /*|| Util.fuzzyLessThanOrEqualTo(timeJumping, 0)*/) throw new IllegalStateException(timeJumping+"");
+
+		this.setX(jumpStep(timeJumping)[0]);
+		this.setY(jumpStep(timeJumping)[1]);
+		this.setRealVector();
+		System.out.println(getActionPoints());
+		this.setActionPoints(0);
+	}
+
+	/**
+	 * Return the time needed to perform a possible jump until it collide with an impassable terrain
+	 * 
+	 * @return 	Return the time needed to perform a possible jump
+	 * 		
+	 */
+	public Tuple<Double, Worm> jumpTime(double timeStep) throws IllegalStateException
+	{
+		if(!canJump()) throw new IllegalStateException();
+
+		double t = 0;
+
+		double xStart = getRealX();
+		double yStart = getRealY();
+
+		double[] position = jumpStep(t = t+timeStep);
+		double x = world.convertToRealX(position[0]);
+		double y = world.convertToRealY(position[1]);
+		double previousX = x;
+		double previousY = y;
+
+		double radius = getRealRadius();
+		double i = 0;
+
+
+		while(world.isInRange(x, y) && calcDistance(xStart, yStart, x, y) < radius) 
+		{
+			i = 0;
+			while(i < .1*radius)
+			{
+				position = jumpStep(t = t+timeStep);
+				previousX = x;
+				previousY = y;
+				x = world.convertToRealX(position[0]);
+				y = world.convertToRealY(position[1]);
+				i += calcDistance(previousX, previousY, x, y);
+			}
+			if(world.isImpassable(x, y, radius)) return new Tuple<>(.0, null);
+		}	
+
+		while(world.isInRange(x, y)) 
+		{
+			i = 0;
+			while(i < .1*radius)
+			{
+				position = jumpStep(t = t+timeStep);
+				previousX = x;
+				previousY = y;
+				x = world.convertToRealX(position[0]);
+				y = world.convertToRealY(position[1]);
+				i += calcDistance(previousX, previousY, x, y);
+			}
+			if(world.isAdjacent(x, y, radius)) break;
+		}
+		return new Tuple<>(t, null);
+	}
+
+	/**
+	 * Shoot a new projectile from the selectedweapon
+	 * 
+	 * @param 	yield
+	 * 			The propulsion force
+	 */
+	public void shoot(int yield)
+	{
+
+		if(!canShoot(yield)) throw new IllegalStateException();
+
+		Projectile projectile;
+		if(getSelectedWeapon().getClass() == bazooka.getClass())
+		{
+			projectile = new ProjectileBazooka(getWorld(), getX()+Math.cos(getOrientation())*(getRadius()+.3), getY()+Math.sin(getOrientation())*(getRadius()+.3), getOrientation(), bazooka);
+			projectile.setForce(2.5 + (9.5-2.5)*(yield)/100.0);
+		}
+		else projectile = new ProjectileRifle(getWorld(), getX()+Math.cos(getOrientation())*(getRadius()+.01), getY()+Math.sin(getOrientation())*(getRadius()+.01), getOrientation(), rifle);
+
+		getWorld().setActiveProjectile(projectile);
+		selectedWeapon.setProjectile(projectile);
+		setActionPoints(getActionPoints() - getSelectedWeapon().getActionPointsCost());
+
+	}
+	public boolean canShoot(int yield)
+	{
+		if(getSelectedWeapon() == null) return false;
+		if(yield <0 || yield >100) return false;
+		return Util.fuzzyGreaterThanOrEqualTo(getActionPoints(), getSelectedWeapon().getActionPointsCost());
+	}
+
+
+	/**
+	 * Return all possible moves to move to, otherwise return the first passable area
+	 * 
+	 * @return
+	 * 			|ArrayList<Vector> list
+	 * 			|ArrayList<Vector> listPassable
+	 * 			|	for each j in getRealX() - getRealRadius() .. getRealX() - getRealRadius() + 2*getRealRadius()
+	 * 			|		for each in getRealY() - getRealRadius() .. getRealY() - getRealRadius() + 2*getRealRadius()
+	 * 			|			if(isInRange(i, j) && isInSector(new Vector(i, j)) then
+	 * 			|				if(isAdjacent(i, j, getRealRadius()) then
+	 * 			|					list.add(new Vector(i, j))
+	 * 			|				else
+	 * 			|					if(listPassable.size()<2) then
+	 * 			|						listPassable.add(new Vector(i, j))
+	 * 			|
+	 * 			|Return list.size() > 0 ? list : listPassable
+	 * 				
+	 */
+	private Collection<Vector> getPossibleMoves()
+	{
+
+		PriorityQueue<Vector> list = new PriorityQueue<Vector>(1, new ComparatorPriority());
+		ArrayList<Vector> listPassable = new ArrayList<Vector>();
+
+		double start = System.currentTimeMillis();
+
+		double iRadius = 0.05*realRadius;
+		double addAngle;
+
+		double i,j;
+
+		double iAngle;
+
+		for(; iRadius <= realRadius; iRadius+=0.05*realRadius)
+		{
+			iAngle = orientation - (Math.PI)/4;
+			addAngle = 1/iRadius;
+			for(; iAngle < orientation + (Math.PI)/4; iAngle+= addAngle)
+			{
+				i = iRadius * Math.cos(iAngle) + getRealX() ;
+				j = iRadius * Math.sin(iAngle) + getRealY();
+				if(world.isInRange(i, j)
+						&&!world.isImpassable(i, j, getRealRadius()))
+				{
+					if(world.isAdjacent(i, j, getRealRadius()))
+					{
+						Vector addVector = new Vector(i, j);
+						addVector.setOrigin(getRealVector(), this);
+						list.add(addVector);
+					}
+					else
+					{
+						if(listPassable.size()<2)
+						{
+							Vector addVector = new Vector(i, j);
+							addVector.setOrigin(getRealVector(), this);
+							listPassable.add(addVector);
+						}
+					}
+				}
+			}
+		}
+
+
+		System.out.println(System.currentTimeMillis() - start);
+		return list.size() > 0 ? list : listPassable;
+
+	}
+
+	/**
+	 * Let this worm fall down
+	 * 
+	 * @post	for each j in getRealY()+1 .. world.getHeight()*world.getScale()
+	 * 				if(passableAndAdjacent(getRealX(), j, getRealRadius()) then
+	 * 					new.getHitPoints == this.getHitPoints()- (int)(3*((j-this.getRealY())/world.getScale()));
+	 *					new.setY == convertToScale(new Vector(this.getRealX(), j)).getY());
+	 *					return;
+	 */
+	public void fall()
+	{
+		for(double j = getRealY()+1; j <= world.getHeight()*world.getScale(); j++)
+		{
+
+			if(world.isAdjacent(getRealX(), j, getRealRadius()))
+			{
+				this.setHitPoints(getHitPoints()- (int)(3*((j-getRealY())/world.getScale())));
+				this.setY(world.convertToScale(new Vector(getRealX(), j)).getY());
+				this.setRealVector();
+				this.setState(State.ADJACENT);
+
+				return;
+			}
+
+		}
+		world.startNextTurn();
+		terminate();
+	}
+
+	/**
+	 * Check whether this worm is still alive
+	 * 
+	 * @return	Return true if and only if the current points of this worm is above zero, otherwise return false
+	 * 			|Return getHitPoints() > 0
+	 */
+	public boolean isAlive()
+	{
+		return getHitPoints() > 0;
+	}
+
+	/**
+	 * Terminate this worm.
+	 * 
+	 * @post 	The bazooka is terminated
+	 *       	|old.getBazooka().isTerminated() == true && new.getBazooka() == null
+	 * @post 	The rifle is terminated
+	 *      	|old.getRifle().isTerminated() == true && new.getRifle() == null
+	 * @post 	The selectedWeapon is equal to null
+	 *      	|new.getSelectedWeapon() == null
+	 * @post 	The world is equal to null
+	 *      	|new.getWorld() == null
+	 * @post 	The vector is equal to null
+	 *      	|old.getVector().isTerminated == true && new.getVector() == null
+	 * @post 	The real vector is equal to null
+	 *      	|new.getRealVector() == null
+	 * @post 	The orientation is equal to 0
+	 *      	|new.getOrientation() == 0	 
+	 * @post 	The radius is equal to 0
+	 *      	|new.getRadius() == 0	
+	 * @post 	The name is equal to null
+	 *      	|new.getName() == null
+	 * @post 	The state is equal to TERMINATED
+	 *      	|new.getState() == State.TERMINATED	    
+	 *
+	 */
+	public void terminate()
+	{
+		super.terminate();
+
+		this.getWorld().removeWorm(this);
+		setWorld(null);
+		bazooka.terminate();
+		bazooka = null;
+		rifle.terminate();
+		rifle = null;
+		selectedWeapon =null;
+		setState(State.TERMINATED);	
+	}
+
+	/**
+	 * Check whether this worm is terminated
+	 * 
+	 * @return	Return true if and only if the state of this worm equals to TERMINATED, otherwise return false
+	 * 			|Result == getState() == State.TERMINATED
+	 * 
+	 */
+	public boolean isTerminated()
+	{
+		return getState() == State.TERMINATED;
+	}
+
+	public static double calcDistance(double x1, double y1, double x2, double y2)
+	{
+		return Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+	}
+
+	protected void setMass() {
+		this.mass = DENSITY * (4.0/3.0)*Math.PI*Math.pow(this.getRadius(),3);
+		this.setMaxActionPoints();
+		this.setMaxHitPoints();
+	}
+
+	public void setForce() {
+		super.force = 5*getActionPoints() + getMass()*Constants.GRAVITATION;
+
+	}
+}

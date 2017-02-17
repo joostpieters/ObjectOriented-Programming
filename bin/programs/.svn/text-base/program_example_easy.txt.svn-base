@@ -1,0 +1,5 @@
+ double a;
+ double b := 3.14;
+ a := 1.0 - sin(b);
+ print a;
+ jump;

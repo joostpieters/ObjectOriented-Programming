@@ -1,0 +1,254 @@
+package worms.model;
+
+import java.util.ArrayList;
+
+import worms.util.Util;
+
+	/**
+	 *  A class straight
+	 *  @version 1.0
+	 *  @author Minh Tri Tran 
+	 *  		1Ba informatica
+	 *  Code repository SVN:
+	 *  		http://sourceforge.net/p/projecttran/code/HEAD/tree/
+	 * 		
+	 */
+public class Straight {
+
+	private double x1;
+	private double y1;
+	private double x2; 
+	private double y2;
+
+	private double a;
+
+	private double x;
+	private double y;
+	
+	private double distanceY;
+	private double distanceX;
+	
+	private ArrayList<Vector> previousPositions = new ArrayList<Vector>();
+	
+	private World world;
+	
+	
+	/**
+	 * Intialize this new straight
+	 * 
+	 * @param 	world
+	 * 			The world to set
+	 * @param	x1
+	 * 			The x location of first vector
+	 * @param 	y1
+	 *			The y location of first vector
+	 * @param	x2
+	 * 			The x location of second vector
+	 * @param 	y2
+	 *			The y location of second vector
+	 *
+	 * @post	new.getX1() == x1
+	 * @post	new.getY1() == y1
+	 * @post	new.getX2() == x2
+	 * @post	new.getY2() == y2
+	 * @post 	new.getWorld() = world
+	 * @post	new.getX() == x1
+	 * @post	new.getY() == y1
+	 * 
+	 */
+	public Straight(World world, double x1, double y1, double x2, double y2)
+	{
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
+		this.world = world;
+		x = x1;
+		y = y1;
+		setA();
+		distanceY = Math.abs((y2-y1)/getWorld().getHeight());
+		distanceX = Math.abs((x2-x1)/getWorld().getWidth());
+	}
+	
+	/**
+	 * Set the rico of this object
+	 * 
+	 * @post	if((x2-x1) != 0) then new.getA() = (y2-y1)/(x2-x1)
+	 * @post	if((x2-x1) == 0) then new.getA() = Double.NaN
+	 * 
+	 */
+	public void setA()
+	{
+		a = (x2-x1)!=0 ? (y2-y1)/(x2-x1) : Double.NaN;
+	}
+	
+	/**
+	 * Return the world
+	 * 
+	 */
+	public World getWorld()
+	{
+		return world;
+	}
+	
+	/**
+	 * Return the x location
+	 *
+	 */
+	public double getX()
+	{
+		return x;
+	}
+	
+	/**
+	 * Return the y location
+	 *
+	 */
+	public double getY()
+	{
+		return y;
+	}
+	
+	/**
+	 * Return y in function of the value of x
+	 * @param 	x
+	 * 			The x location to evaluate the equation
+	 * 
+	 * @post	|if(!Double.isNaN(a)) then new.getY() == (getA()*(x-getX1())+getY1())
+	 * 
+	 * @return	|Result getY()
+	 * 
+	 */
+	public double getY(double x)
+	{
+		return this.y= Double.isNaN(a) ? y :  (a*(x-x1)+y1);
+	}
+	
+	/**
+	 * Return x in function of the value of y
+	 * @param 	y
+	 * 			The y location to evaluate the equation
+	 * 
+	 * @post	|new.getX() == ((y-getY1())/getA()) + getX1();
+	 * 
+	 * @return	|Result getX()
+	 * 
+	 */
+	public double getX(double y)
+	{
+		return this.x = ((y-y1)/a) + x1;
+	}
+	
+	/**
+	 * Set x and y on the next value closer two vector2
+	 * 
+	 * @post	if(Vector(x,y) > Vector(x2, y2)) then
+	 * 				new.getX() == -1
+	 * 				new.getY() == -1
+	 * 			else	
+	 * 				new.getY() == old.getY()  + distanceY
+	 * 				new.getX() == getX(Y)
+	 * 
+	 */
+	public void nextPositionCloser()
+	{
+		if(x != -1 && y != -1)
+		{
+			if(Util.fuzzyLessThanOrEqualTo(x, x2) && !Util.fuzzyEquals(x, x2))
+			{
+				if(Util.fuzzyLessThanOrEqualTo(y, y2) && !Util.fuzzyEquals(y, y2))
+				{
+					x = getX(y=y+distanceY);
+					if( Util.fuzzyGreaterThanOrEqualTo(x, x2) || Util.fuzzyGreaterThanOrEqualTo(y, y2))
+					{
+						x = -1; 
+						y = -1;
+					}
+				}
+				else if(Util.fuzzyGreaterThanOrEqualTo(y, y2) && !Util.fuzzyEquals(y, y2))
+				{
+					x = getX(y=y-distanceY);
+					if( Util.fuzzyGreaterThanOrEqualTo(x, x2) || Util.fuzzyLessThanOrEqualTo(y, y2))
+					{
+						x = -1; 
+						y = -1;
+					}
+				}
+				else  
+				{
+					x = x+ distanceX;
+					if( Util.fuzzyGreaterThanOrEqualTo(x, x2))
+					{
+						x = -1; 
+						y = -1;
+					}
+				}
+
+			}
+			else if(Util.fuzzyGreaterThanOrEqualTo(x, x2) && !Util.fuzzyEquals(x, x2))
+			{
+				if(Util.fuzzyLessThanOrEqualTo(y, y2) && !Util.fuzzyEquals(y, y2))
+				{
+					x = getX(y=y+distanceY);
+					if(Util.fuzzyLessThanOrEqualTo(x, x2) || y > y2) 
+					{
+						x = -1; 
+						y = -1;
+					}
+				}
+				else if(Util.fuzzyGreaterThanOrEqualTo(y, y2) && !Util.fuzzyEquals(y, y2)) 
+				{
+					//x = getX(y=y-distanceY);
+					y =getY(x =x-distanceY);
+					if( Util.fuzzyLessThanOrEqualTo(x, x2) || Util.fuzzyLessThanOrEqualTo(y, y2)) 
+					{
+						x = -1; 
+						y = -1;
+					}
+				}
+				else
+				{
+					x = x - distanceX;
+					if( Util.fuzzyLessThanOrEqualTo(x, x2))
+					{
+						x = -1; 
+						y = -1;
+					}
+				}
+			}
+			else 
+			{	
+				if(Util.fuzzyLessThanOrEqualTo(y, y2)) 
+				{
+					y = y+ distanceY;
+					if( Util.fuzzyGreaterThanOrEqualTo(y, y2))
+					{
+						x = -1; 
+						y = -1;
+					}
+				}
+				else if(Util.fuzzyGreaterThanOrEqualTo(y, y2)) 
+				{
+					y = y - distanceY;
+					if( Util.fuzzyLessThanOrEqualTo(y, y2)) 
+					{
+						x = -1; 
+						y = -1;
+					}
+				}
+				else x = -1.0; y= -1.0;
+			}
+		}
+		previousPositions.add(new Vector(x, y));
+	}
+	
+	/**
+	 * Return the previous positions
+	 * 
+	 */
+	public ArrayList<Vector> getPreviousPositions()
+	{
+		return previousPositions;
+	}
+
+}

@@ -1,0 +1,4 @@
+double a := a + 1;
+jump;
+turn 2;
+print a; //expect always 1

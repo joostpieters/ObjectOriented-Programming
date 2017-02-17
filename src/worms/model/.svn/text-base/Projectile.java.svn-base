@@ -1,0 +1,349 @@
+package worms.model;
+
+import worms.util.Util;
+
+/**
+ *  A class projectile, containing all its characteristics such as its mass, ...
+ *  
+ *  @version 1.0
+ *  @author Minh Tri Tran 
+ *  		1Ba informatica
+ *  Code repository SVN:
+ *  		http://sourceforge.net/p/projecttran/code/HEAD/tree/
+ * 		
+ */
+public class Projectile extends Entity{
+
+	/**
+	 * The density of each projectile.
+	 */
+
+	protected double force ;
+	protected int damage;
+	protected int actionPointsCost;
+	protected Weapon weapon;
+
+	protected boolean isTerminated;
+
+	/**
+	 * Initialize this new projectile with the given location, radius, orientation
+	 * 
+	 * @param	x
+	 * 			The x location for this new projectile
+	 * @param 	y
+	 * 			The y location for this new projectile
+	 * @param 	mass
+	 * 			The mass for this new projectile
+	 * @param 	orientation
+	 * 			The orientation for this new projectile
+	 * 
+	 * @post	|new.getX() == x
+	 * @post	|new.getY() == y
+	 * @post	|new.getMass() == mass
+	 * @post	|new.getOrientation() = orientation
+	 * 
+	 */
+	public Projectile(World world, double x, double y, double mass, double orientation, Weapon weapon)
+	{
+		super(world, x, y, orientation, 7800);
+
+		setWeapon(weapon);
+		setWorld(getWeapon().worm.getWorld());
+		setMass(mass);
+	}
+
+	/**
+	 * Set the world with the given world
+	 * 
+	 * @param 	world
+	 * 			The world to set as world
+	 * 
+	 * @post	new.getWorld() == world
+	 */
+	@Override
+	public void setWorld(World world)
+	{
+		this.world = world;
+		if(world != null) world.setActiveProjectile(this);
+	}
+
+	/**
+	 * Set the radius with the given radius
+	 * 
+	 * @post	new.getRadius() == Math.pow((3.0/(4.0*Math.PI)) * (getMass()/DENSITY), 1.0/3.0)
+	 * 
+	 */
+	protected void setRadius() 
+	{
+		this.radius = Math.pow((3.0/(4.0*Math.PI)) * (getMass()/DENSITY), 1.0/3.0);
+		setRealRadius();
+	}
+
+	/**
+	 * Set the mass with the given mass
+	 * 
+	 * @param 	mass
+	 * 			The mass to set as new mass
+	 * 
+	 * @post	new.getMass() == mass
+	 * 
+	 * @throws	IllegalArgumentException
+	 * 			|mass < 0 || Double.isNaN(mass)
+	 *  
+	 */
+	protected void setMass(double mass) throws IllegalArgumentException
+	{
+		if(mass < 0 || Double.isNaN(mass)) throw new IllegalArgumentException();
+		this.mass = mass;
+		this.setRadius();
+	}
+
+	/**
+	 * Set the force of this projectile
+	 * 
+	 * @param 	force
+	 * 			The force to set 
+	 * 
+	 * @post	|new.getForce() == force
+	 * 
+	 * @throws 	IllegalArgumentException
+	 * 			|Double.isNaN(force)
+	 * 
+	 */
+	public void setForce(double force) throws IllegalArgumentException
+	{
+		if(Double.isNaN(force))throw new IllegalArgumentException();
+		this.force = force;
+	}
+
+	/**
+	 * Set the damage of this projectile
+	 * 
+	 * @param 	damage
+	 * 			The damage to set 
+	 * 
+	 * @post	|new.getDamage() == damage
+	 * 
+	 * @throws 	IllegalArgumentException
+	 * 			|damage < 0
+	 * 
+	 */
+	public void setDamage(int damage) throws IllegalArgumentException
+	{
+		if(damage < 0) throw new IllegalArgumentException();
+		this.damage = damage;
+	}
+
+
+	/**
+	 * Set the the action points cost of this projectile
+	 * 
+	 * @param 	actionPointsCost
+	 * 			The action points cost to set 
+	 * 
+	 * @post	|new.getActionPointsCost() == actionPointsCost
+	 * 
+	 * @throws 	IllegalArgumentException
+	 * 			|actionPointsCost < 0
+	 * 
+	 */
+	public void setActionPointsCost(int actionPointsCost) throws IllegalArgumentException
+	{
+		if(actionPointsCost < 0 ) throw new IllegalArgumentException();
+		this.actionPointsCost = actionPointsCost;
+	}
+
+	/**
+	 * Set the weapon of this projectile
+	 * 
+	 * @param 	weapon
+	 * 			The weapon to set 
+	 * 
+	 * @post	|new.getWeapon() == weapon
+	 * 
+	 * 
+	 */
+	public void setWeapon(Weapon weapon)
+	{
+		this.weapon = weapon;
+	}
+
+	/**
+	 * Return the force of this projectile
+	 * 
+	 */
+	public double getForce()
+	{
+		return force;
+	}
+
+	/**
+	 * Return the damage of this projectile
+	 * 
+	 */
+	public int getDamage()
+	{
+		return damage;
+	}
+
+	/**
+	 * Return the action points cost of this projectile
+	 * 
+	 */
+	public int getActionPointsCost()
+	{
+		return actionPointsCost;
+	}
+
+	/**
+	 * Return the weapon of this projectile
+	 * 
+	 */
+	public Weapon getWeapon()
+	{
+		return weapon;
+	}
+
+	/**
+	 * Check whether this worm can jump.
+	 * 
+	 * @return 	Return true if and only if there are action points left and if the orientation set on a positive scale of 2PI is smaller or equal to PI.
+	 * 			|result == this.getActionPoints() > 0 && this.getSmallestPositiveAngle(this.getOrientation)<= Math.PI
+	 */
+	public boolean canJump()
+	{
+		return getWeapon().getWorm().getActionPoints() > getActionPointsCost();
+	}
+
+	/**
+	 * @post	The new (x,y) location of this worm is equal to its (x,y) location after jumping.
+	 * 			|new.getX(jumpStep(jumpTime()[0])
+	 * 			|new.getY(jumpStep(jumpTime()[1])
+	 * @post	|isTerminated() == true
+	 * 
+	 * @throws 	IllegalArgumentException
+	 * 			This worm cannot jump.
+	 * 			|!canJump() == true
+	 */
+	public void jump(double timeStep) throws IllegalStateException
+	{
+		Tuple<Double, Worm> tupleJump = jumpTime(timeStep);
+		Worm worm = tupleJump.worm;
+		double timeJumping = tupleJump.i;
+
+		if(!canJump()) throw new IllegalStateException();
+
+		if(worm != null)
+		{
+			worm.setHitPoints(worm.getHitPoints()-getDamage());
+			if(worm.getHitPoints() <=0) worm.terminate();
+		}
+		this.setX(jumpStep(timeJumping)[0]);
+		this.setY(jumpStep(timeJumping)[1]);
+		this.setRealVector();
+		getWeapon().setProjectile(null);
+		terminate();
+	}
+
+	/**
+	 * Return the time needed to perform a possible jump until it collide with an impassable terrain
+	 * 
+	 * @param timeStep An elementary time interval during which you may assume
+	 *        that the projectile will not completely move through a piece of impassable terrain.
+	 *        
+	 * @return 	Return a tuple containing time needed to perform a possible jump and the worm that is hit if this one exists	
+	 * 			
+	 * @throws	IllegalStateException
+	 * 			!canJump()
+	 * 		
+	 */
+	public Tuple<Double, Worm> jumpTime(double timeStep) throws IllegalStateException
+	{
+		if(!canJump()) throw new IllegalStateException();
+
+		double t = 0;
+
+		double xStart = getRealX();
+		double yStart = getRealY();
+		double[] position = jumpStep(t = t+timeStep);
+		double x = world.convertToRealX(position[0]);
+		double y = world.convertToRealY(position[1]);
+		double previousX = x;
+		double previousY = y;
+
+		double radius = getRealRadius();
+		double i = 0;
+
+		while(world.isInRange(x, y)) 
+		{
+			i = 0;
+			while(i < .1*radius)
+			{
+				position = jumpStep(t = t+timeStep/100.0);
+				previousX = x;
+				previousY = y;
+				x = world.convertToRealX(position[0]);
+				y = world.convertToRealY(position[1]);
+				i += Worm.calcDistance(previousX, previousY, x, y);
+			}
+			for(Worm worm : world.getWorms())
+			{
+
+				if(worm != this.getWeapon().getWorm() && Util.fuzzyLessThanOrEqualTo(Worm.calcDistance(x, y, worm.getRealX(), worm.getRealY()), getRealRadius() + worm.getRealRadius()))
+				{
+					System.out.println("HITT");
+					return new Tuple<Double, Worm>(t, worm);
+
+				}
+			}
+			if(world.isImpassable(x, y, radius)) break;
+		}
+
+		return new Tuple<Double, Worm>((Worm.calcDistance(xStart, yStart, x, y) > radius ? t : 0), null);
+	}
+
+	/**
+	 * Terminate this projectile.
+	 * 
+	 * @post 	The world is equal to null
+	 *       	|new.getWorld() == null
+	 * @post 	The vector is terminated
+	 *      	|old.getVector().isTerminated() == true && new.getVector() == null
+	 * @post 	The mass is equal to 0
+	 *      	|new.getMass() == 0
+	 * @post 	The radius is equal to 0
+	 *      	|new.getRadius() == 0
+	 * @post 	The orientation is equal to 0
+	 *      	|new.getVector() == 0
+	 * @post 	The damage is equal to 0
+	 *      	|new.getDamage() == 0
+	 * @post 	The actionPointsCost is equal to 0
+	 *      	|new.getActionPointsCost() == 0	 
+	 * @post 	The weapon is equal to null
+	 *      	|new.getWeapon() == null
+	 * @post 	This projectile is terminated
+	 *      	|isTerminated() == true    
+	 *
+	 */
+	public void terminate()
+	{
+		getWorld().setActiveProjectile(null);
+		setWorld(null);
+		getWeapon().setProjectile(null);
+		setWeapon(null);
+		isTerminated = true;
+	}
+
+	/**
+	 * Check whether this projectile is terminated
+	 * 
+	 * @return	Return true if and only if isTerminated equals true, otherwise return false
+	 * 			|Result == isTerminated
+	 * 
+	 */
+	public boolean isTerminated()
+	{
+		return isTerminated;
+	}
+
+}

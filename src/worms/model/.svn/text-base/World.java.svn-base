@@ -1,0 +1,498 @@
+package worms.model;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Random;
+
+import worms.util.Util;
+
+/**
+ * A class World which contains data such as passableMap, width ..
+ *  
+ *  @version 1.0
+ *  @author Minh Tri Tran 
+ *  		1Ba informatica
+ *  Code repository SVN:
+ *  		http://sourceforge.net/p/projecttran/code/HEAD/tree/
+
+ */
+
+public class World {
+
+	private double width;
+	private double height;
+	private boolean[][] passableMap;
+	private Random random;
+	private double scale;
+
+	private final static double MIN_SIZE = .0;
+	private final static double MAX_SIZE = Double.MAX_VALUE;
+
+	private Collection<Worm> worms = new ArrayList<Worm>();
+	private Worm currentWorm;
+
+	private Projectile activeProjectile;
+
+	private double midX;
+	private double midY;
+
+	/**
+	 * Initialize this new world with the given width, height, passableMap, random
+	 *
+	 * 
+	 * @param	width
+	 * 			The width of this new world
+	 * @param	height
+	 * 			The height of this new world	
+	 * @param	passableMap
+	 * 			The passableMap containing whether or not a pixel is passable
+	 * @param	random
+	 * 			A random generator that generate random values
+	 * 
+	 * @post	The width of this new world is equals the given width
+	 * 			|new.getWidth() == width
+	 * @post	The height of this new world is equals the given height
+	 * 			|new.getHeight() == height
+	 * @post 	The passable map of this new worm is equals the given passable map.
+	 * 			|new.getPassableMap() == passableMap
+	 * @post 	The random of this new worm is equals the given random.
+	 * 			|new.getRandom() == random
+	 * 
+	 */
+	public World(double width, double height, boolean[][] passableMap, Random random)
+	{
+		setWidth(width);
+		setHeight(height);
+		setMidX();
+		setMidY();
+		setPassableMap(passableMap);
+		setRandom(random);
+		setScale();
+	}
+
+
+	private void setScale()
+	{
+		this.scale = this.getPassableMap().length/getHeight();
+	}
+
+	/**
+	 * Return the scale of this world
+	 * 
+	 */
+	public double getScale()
+	{
+		return this.scale;
+	}
+
+	/**
+	 * Return the current worm
+	 * 
+	 */
+	public Worm getCurrentWorm()
+	{
+		return currentWorm;
+	}
+
+	/**
+	 * Set the given worm as the current worm
+	 * 
+	 * @param 	worm
+	 * 		  	The worm to set as current worm
+	 * 
+	 * @post	The current worm is equal to the given worm
+	 * 			|new.getCurrentWorm() == worm
+	 */
+	public void setCurrentWorm(Worm worm)
+	{
+		if(getWorms().contains(worm)) currentWorm = worm;
+	}
+
+	/**
+	 * Set the given projectile as the active projectile of this world
+	 * 
+	 * @param 	projectile
+	 * 		  	The projectile to set as the active projectile
+	 * 
+	 * @post	The active projectile is equal to the given projectile
+	 * 			|new.getActiveProjectile() == projectile
+	 */
+	public void setActiveProjectile(Projectile projectile)
+	{
+		activeProjectile = projectile;
+	}
+
+	private void setWidth(double width)
+	{
+		if(isValidSize(width)) this.width = width;
+		else throw new IllegalArgumentException();
+
+	}
+	private void setMidX()
+	{
+		midX = width/2.0;
+	}
+	private void setHeight(double height)
+	{
+		if(isValidSize(height)) this.height = height; 
+		else throw new IllegalArgumentException();
+	}
+	private void setMidY()
+	{
+		midY = height /2.0;
+	}
+	private boolean isValidSize(double size)
+	{
+		return !Double.isNaN(size) && size >= MIN_SIZE && size <= MAX_SIZE ;
+	}
+
+	/**
+	 * Set the given map as the passable map
+	 * 
+	 * @param 	passableMap
+	 * 		  	The map to set as the passable map
+	 * 
+	 * @post	|new.getPassableMap() == passableMap
+	 * 
+	 */
+	public void setPassableMap(boolean[][] map)
+	{
+		this.passableMap = map;
+	}
+
+	/**
+	 * Set the given random as random
+	 * 
+	 * @param 	random
+	 * 		  	The random to set as the random of this world
+	 * 
+	 * @post	|new.getRandom() == random
+	 * 
+	 */
+	public void setRandom(Random random)
+	{
+		this.random = random;
+	}
+
+	/**
+	 * Add the given worm in this world
+	 * 
+	 * @param 	worm
+	 * 			The worm to add
+	 * 
+	 * @post	if(worm != null && !getWorms().contains(worm)) then
+	 * 				new.getWorms().get(getWorms().size - 1) == worm
+	 */
+	public void addWorm(Worm worm)
+	{
+		if(worm == null ) return;
+		if(!worms.contains(worm)) worms.add(worm);
+	}
+
+	/**
+	 * Return x position of the middle point of this world
+	 * 
+	 */
+	public double getMidX()
+	{
+		return midX;
+	}
+
+	/**
+	 * Return y position of the middle point of this world
+	 * 
+	 */
+	public double getMidY()
+	{
+		return midY;
+	}
+
+	/**
+	 * Return the minimal size of all worlds
+	 * 
+	 */
+	public static double getMinimalSize()
+	{
+		return MIN_SIZE;
+	}
+
+	/**
+	 * Return the maximal size of all worlds
+	 * 
+	 */
+	public static double getMaximalSize()
+	{
+		return MAX_SIZE;
+	}
+
+	/**
+	 * Return the width of this world
+	 * 
+	 */
+	public double getWidth()
+	{
+		return width;
+	}
+
+	/**
+	 * Return the height of this world
+	 * 
+	 */
+	public double getHeight()
+	{
+		return height;
+	}
+
+	/**
+	 * Return the passable map of this world
+	 * 
+	 */
+	public boolean[][] getPassableMap()
+	{
+		return passableMap;
+	}
+
+	/**
+	 * Return the random of this world
+	 * 
+	 */
+	public Random getRandom()
+	{
+		return random;
+	}
+
+	/**
+	 * Return the list containing all worms in this world
+	 * 
+	 */
+	public Collection<Worm> getWorms()
+	{
+		return worms;
+	}
+
+	/**
+	 * Return the active projectile of this world
+	 * 
+	 */
+	public Projectile getActiveProjectile()
+	{
+		return activeProjectile;
+	}
+
+	/**
+	 * Remove the given worm from this world
+	 * 
+	 * @param 	worm	
+	 * 			The worm to be removed
+	 * 
+	 * @post	worm.(new getWorld()) == null
+	 * 			new.getWorms().contains(worm) == false
+	 * 			
+	 * @throws	NullPointerException
+	 * 			|worm == null
+	 */
+	public void removeWorm(Worm worm)
+	{
+		if(worm == null) throw new NullPointerException();
+		worms.remove(worm);
+	}
+
+	/**
+	 * Return whether the given position is in range of the passable map
+	 * 
+	 * @param 	i
+	 * 			The x position to check
+	 * @param 	j
+	 * 			The y position to check
+	 * 
+	 * @return	|Result == i >=0 && i < getPassableMap()[0].length && j >= 0 && j < getPassableMap().length
+	 * 
+	 */
+	public boolean isInRange(double i, double j){
+		return (i >=0 && i < getPassableMap()[0].length && j >= 0 && j < getPassableMap().length);
+	}
+	public boolean isInRange(Vector vector)
+	{
+		return isInRange(vector.getX(), vector.getY());
+	}
+	public boolean isInRangeInMeters(double i, double j)
+	{
+		return (i >=0 && i <= width && j >= 0 && j <= height);
+	}
+
+	public boolean isImpassable(double x, double y)
+	{
+		//general
+		double xViewedOnAPixel = x % (1/getScale());
+		double yViewedOnAPixel = y % (1/getScale());
+
+		double nextPixel = .1*(1/getScale());
+
+
+		if(Util.fuzzyEquals(0, xViewedOnAPixel)) 
+		{
+			if(Util.fuzzyEquals(0, yViewedOnAPixel))
+			{
+				//diagonal
+				if(isInRange(x-nextPixel, y-nextPixel) && isInRange(x+nextPixel, y+nextPixel) &&
+						!getPassableMap()[(int)(x-nextPixel)][(int)(y-nextPixel)] &&
+						!getPassableMap()[(int)(x+nextPixel)][(int)(y+nextPixel)]) 
+							return true;
+				else if(isInRange(x-nextPixel, y+nextPixel) && isInRange(x+nextPixel, y-nextPixel) &&
+						!getPassableMap()[(int)(x-nextPixel)][(int)(y+nextPixel)] &&
+						!getPassableMap()[(int)(x+nextPixel)][(int)(y-nextPixel)]) 
+							return true;
+				else return false;
+			}
+			else
+			{
+				//left and right
+				if(isInRange(x, y) && isInRange(x-nextPixel, y) &&
+						!getPassableMap()[(int)(x-nextPixel)][(int)(y)] && !getPassableMap()[(int)x][(int)y]) return true;
+				else 
+					return false;
+			}
+		}
+		else
+		{
+			if(Util.fuzzyEquals(0, yViewedOnAPixel))
+			{
+				if(isInRange(x, y) && isInRange(x, y-nextPixel) &&
+						!getPassableMap()[(int)(x)][(int)(y-nextPixel)] && !getPassableMap()[(int)x][(int)y]) return true;
+				else 
+					return false;
+			}
+			else
+			{
+				return !getPassableMap()[(int)x][(int)y];
+			}
+		}
+
+	}
+	/**
+	 * 	Check whether a given area is impassable
+	 * @param 	x
+	 * 			The x position of the center of the area to check
+	 * @param 	y
+	 * 			The y position of the center of the area to check
+	 * @param 	radius
+	 * 			The radius of the area to check
+	 * 
+	 * @return	for each j in realX - realRadius .. realX - realRadius + 2*realRadius width step 1*getScale()
+	 *				for each j in realX - realRadius .. realX - realRadius + 2*realRadius width step 1*getScale()
+	 *					if(isInRange(i, j) && calcDistance(new Vector(i,j), new Vector(realX, realY)) <= realRadius) then
+	 *						if(!getPassableMap()[j][i]) then result ==  true;
+	 *			result == false;
+	 * 
+	 */
+	public boolean isImpassable(double x, double y, double insideRadius, double outsideRadius)
+	{
+		double iRadius = insideRadius;
+		double addAngle;
+		for(; iRadius <= outsideRadius; iRadius+=.05*outsideRadius)
+		{
+			double iAngle = 0;
+
+			if(iRadius == 0)
+			{
+				if(isInRange(x,y) && isImpassable(y, x)) return true;
+				++iRadius;
+			}
+			addAngle = 1/iRadius;
+			for(; iAngle < 2*Math.PI; iAngle+= addAngle)
+			{
+				if(isInRange((int)(iRadius * Math.cos(iAngle) + x), (int)(iRadius * Math.sin(iAngle) + y)) && isImpassable(iRadius * Math.sin(iAngle) + y, iRadius * Math.cos(iAngle) + x))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+
+	}
+	public boolean isImpassable(double x, double y, double radius)
+	{
+		if(Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(radius) || !isInRange(x, y) ) return false;
+		return isImpassable(x, y, 0, Math.abs(radius));
+	}
+
+	/**
+	 * 	Check whether a given area is adjacent to impassable terrain
+	 * 
+	 * @param 	x
+	 * 			The x position of the center of the area to check
+	 * @param 	y
+	 * 			The y position of the center of the area to check
+	 * @param 	radius
+	 * 			The radius of the area to check
+	 * 
+	 * @return	Return 
+	 * 			!isImpassable(x, y, radius) &&
+				isImpassable(x, y, radius+1, radius + radius*.1);
+	 * 
+	 */
+	public boolean isAdjacent(double x, double y, double radius)
+	{
+		return !isImpassable(x, y, radius) &&
+				isImpassable(x, y, radius+1, radius + radius*.1);
+	}
+
+	public Vector convertToReal(Vector v)
+	{
+		return new Vector(convertToRealX(v.getX()), convertToRealY(v.getY())) ;
+	}
+	public Vector convertToScale(Vector v)
+	{
+		return new Vector(v.getX()/getScale(), (v.getY()+1-getHeight()*getScale())/(-getScale()));
+	}
+	public void startNextTurn()
+	{
+		int x = ((ArrayList<Worm>) getWorms()).indexOf(getCurrentWorm());
+		if(x == getWorms().size()-1) x = -1;
+		for(++x; x < getWorms().size(); x++) if(((ArrayList<Worm>) getWorms()).get(x).isAlive()) break;
+
+		this.setCurrentWorm((Worm)getWorms().toArray()[x]);
+		getCurrentWorm().setActionPoints(getCurrentWorm().getMaxActionPoints());
+		getCurrentWorm().setHitPoints(getCurrentWorm().getHitPoints() + 10);
+
+		if(getCurrentWorm().hasProgram())
+		{
+			getCurrentWorm().getProgram().execute();
+			startNextTurn();
+		}
+	}
+	public double convertToRealX(double x)
+	{
+		return x*this.getScale();
+	}
+	public double convertToRealY(double y)
+	{
+		return this.getHeight()*getScale()-1 - y*this.getScale();
+	}
+
+	public void addNewWorm(Program program)
+	{
+		double radius = Worm.MIN_RADIUS*3;
+		double x = random.nextDouble()*getWidth();
+		double y = random.nextDouble()*getHeight();
+		double angleTowardsCenter = (Math.atan2(getMidY() -y,  getMidX()-x))% (2*Math.PI);
+		
+		while( !isAdjacent(convertToReal(new Vector(x,y)).getX(), convertToReal(new Vector(x,y)).getY(), radius*getScale() ))
+		{
+			if(!isInRangeInMeters(x, y)) return; //throw new IllegalArgumentException("No place found to set worm");
+
+			//half 0.1 radius => mist geen adjacency
+			x = x + (0.05*radius)*Math.cos(angleTowardsCenter);
+			y = y + (0.05*radius)*Math.sin(angleTowardsCenter);
+		}
+		String name;
+		if(program == null) name = Worm.DEFAULT_NAME;
+		else name = "Computer";
+
+		Worm newWorm = new Worm(this, x, y, Math.PI/2, radius, name, program);
+		newWorm.setState(State.ADJACENT);
+		addWorm(newWorm);
+	}
+}

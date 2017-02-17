@@ -1,0 +1,38 @@
+package worms.model.programs.parser.removed;
+
+import worms.model.Worm;
+import worms.model.programs.parser.Literal;
+
+public class LiteralEntity extends Literal<Worm> {
+
+	/**
+	 * Initialize this new integer literal with given value.
+	 *
+	 * @param  value
+	 *         The value for this new integer literal.
+	 * @post   The value of this new integer literal is equal to
+	 *         the given value.
+	 *       | new.getValue() == value
+	 */
+
+	public LiteralEntity(Worm value) {
+		super(value);
+	}
+	/**
+	 * Initialize this new integer literal with value 0.
+	 *
+	 * @effect This new integer literal is initialized with 0
+	 *         as its value.
+	 *       | this(0)
+	 */
+	public LiteralEntity() {
+		this(null);
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		// TODO Auto-generated method stub
+		if(other.getClass() != this.getClass()) return false;
+		return other == this;
+	}
+}

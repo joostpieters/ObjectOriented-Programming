@@ -1,0 +1,23 @@
+package worms.model.programs.parser.removed;
+
+import worms.model.programs.parser.Type;
+
+public class TypeDouble extends Type<Double>{
+
+	public TypeDouble()
+	{
+		setValue(.0);
+	}
+	@Override
+	public Double getValue() {
+		// TODO Auto-generated method stub
+		return new Double(value);
+	}
+
+	@Override
+	public void setValue(Double newValue) {
+		// TODO Auto-generated method stub
+		value = newValue;
+	}
+
+}

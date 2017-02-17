@@ -1,0 +1,119 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p/worms3/code/!svn/ver/4/1314-Worms-Part3/src/worms/model
+END
+Constants.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/p/worms3/code/!svn/ver/3/1314-Worms-Part3/src/worms/model/Constants.java
+END
+Projectile.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/worms3/code/!svn/ver/15/1314-Worms-Part3/src/worms/model/Projectile.java
+END
+Rifle.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/p/worms3/code/!svn/ver/3/1314-Worms-Part3/src/worms/model/Rifle.java
+END
+ProjectileBazooka.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/p/worms3/code/!svn/ver/5/1314-Worms-Part3/src/worms/model/ProjectileBazooka.java
+END
+Tuple.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/p/worms3/code/!svn/ver/3/1314-Worms-Part3/src/worms/model/Tuple.java
+END
+Program.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/p/worms3/code/!svn/ver/15/1314-Worms-Part3/src/worms/model/Program.java
+END
+Vector.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/p/worms3/code/!svn/ver/11/1314-Worms-Part3/src/worms/model/Vector.java
+END
+Entity.java
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/p/worms3/code/!svn/ver/5/1314-Worms-Part3/src/worms/model/Entity.java
+END
+WeaponsName.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/worms3/code/!svn/ver/3/1314-Worms-Part3/src/worms/model/WeaponsName.java
+END
+ProjectileRifle.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/p/worms3/code/!svn/ver/5/1314-Worms-Part3/src/worms/model/ProjectileRifle.java
+END
+Food.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/p/worms3/code/!svn/ver/3/1314-Worms-Part3/src/worms/model/Food.java
+END
+Weapon.java
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/p/worms3/code/!svn/ver/5/1314-Worms-Part3/src/worms/model/Weapon.java
+END
+Facade.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/p/worms3/code/!svn/ver/15/1314-Worms-Part3/src/worms/model/Facade.java
+END
+ComparatorPriority.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/p/worms3/code/!svn/ver/3/1314-Worms-Part3/src/worms/model/ComparatorPriority.java
+END
+Straight.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/p/worms3/code/!svn/ver/3/1314-Worms-Part3/src/worms/model/Straight.java
+END
+Worm.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/p/worms3/code/!svn/ver/16/1314-Worms-Part3/src/worms/model/Worm.java
+END
+World.java
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/p/worms3/code/!svn/ver/16/1314-Worms-Part3/src/worms/model/World.java
+END
+State.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/p/worms3/code/!svn/ver/3/1314-Worms-Part3/src/worms/model/State.java
+END
+Bazooka.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/p/worms3/code/!svn/ver/3/1314-Worms-Part3/src/worms/model/Bazooka.java
+END

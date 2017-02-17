@@ -1,0 +1,22 @@
+package worms.model.programs.parser.removed;
+
+import worms.model.programs.parser.Type;
+
+public class TypeBool extends Type<Boolean>
+{	
+	public TypeBool()
+	{
+		setValue(Boolean.FALSE);
+	}
+	@Override
+	public Boolean getValue()
+	{
+		return value;
+	}
+	@Override
+	public void setValue(Boolean newValue) {
+		// TODO Auto-generated method stub
+		value = newValue;
+	}
+}
+

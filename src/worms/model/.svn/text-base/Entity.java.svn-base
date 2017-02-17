@@ -1,0 +1,444 @@
+package worms.model;
+
+import worms.util.Util;
+import be.kuleuven.cs.som.annotate.Basic;
+
+public abstract class Entity {
+
+		protected final double DENSITY;
+		protected World world;
+		protected Vector vector = new Vector();
+		protected Vector realVector = new Vector();
+		protected double orientation;
+		protected double radius;
+		protected double realRadius;
+		protected double mass;
+		protected double force;
+
+
+		/**
+		 * Initialize this new worm at location (0,0), with an orientation of 0, with the minimal radius, the default name as name and belongs to no world. 
+		 * 
+		 * @effect	This new worm is initialized with x and y location 0, with an orientation of 0, the minimal radius
+		 * 			, the default name in no world.
+		 * 			|this(null,0,0,0, Worm.getConstants.MIN_RADIUS(), Worm.getConstants.DEFAULT_NAME())
+		 */
+		public Entity(World world)
+		{
+			this(world, 0.0, 0.0, 0.0, 1);
+		}
+
+		/**
+		 * Initialize this new worm at the given location (x,y), with the given orientation, given radius
+		 * and the given name in the given world. 
+		 * 
+		 * @param	world
+		 * 			The world to create this new worm within
+		 * @param	x
+		 * 			The x location for this new worm.		
+		 * @param	y
+		 * 			The y location for this new worm.
+		 * @param	orientation
+		 * 			The orientation for this new worm.
+		 * @param	radius
+		 * 			The radius for this new worm.
+		 * @param	name
+		 * 			The name for this new worm.
+		 * 
+		 * @post	The world of this new worm is equals the given world
+		 * 			|new.getWorld() == world
+		 * @post 	The location of this new worm is equals the given (x,y)-location.
+		 * 			|new.getX() == x && new.getY() == y
+		 * @post 	The orientation of this new worm is equals the given orientation.
+		 * 			|new.getOrientation() == orientation
+		 * @post 	The radius of this new worm is equals the given radius.
+		 * 			|new.getRadius() == radius
+		 * @post 	The name of this new worm is equals the given name.
+		 * 			|new.getName() == name
+		 * 
+		 */
+		public Entity (World world, double x, double y, double orientation, double density)
+		{
+			this.setWorld(world);
+			this.setX(x);
+			this.setY(y);
+			this.setOrientation(orientation);
+			this.DENSITY = density;
+		}
+
+
+
+		public double getForce()
+		{
+			return force;
+		}
+		/**
+		 * Return the x location of this worm.
+		 * 
+		 */
+		@Basic
+		public double getX()
+		{
+			return vector.getX();
+		}
+
+		/**
+		 * Return the y location of this worm.
+		 * 
+		 */
+		@Basic
+		public double getY()
+		{
+			return vector.getY();
+		}
+
+		/**
+		 * Return the orientation of this worm.
+		 * 
+		 */
+		@Basic
+		public double getOrientation()
+		{
+			return orientation;
+		}
+
+		/**
+		 * Return the radius of this worm.
+		 * 
+		 */
+		@Basic
+		public double getRadius()
+		{
+			return radius;
+		}
+
+		/**
+		 * Return the mass of this worm.
+		 * 
+		 */
+		@Basic
+		public double getMass()
+		{
+			return mass;
+		}
+
+		/**
+		 * Return the world of this worm
+		 * 
+		 */
+		public World getWorld()
+		{
+			return world;
+		}
+
+
+		/**
+		 * Return the real(= not scaled) x of this worm
+		 * 
+		 */
+		public double getRealX()
+		{
+			return realVector.getX();
+		}
+
+		/**
+		 * Return the real y of this worm
+		 * 
+		 */
+		public double getRealY()
+		{
+			return realVector.getY();
+		}
+
+		/**
+		 * Return the real radius of this worm
+		 * 
+		 */
+		public double getRealRadius()
+		{
+			return realRadius;
+		}
+
+		/**
+		 * Return the vector which contains positional information of this worm
+		 * 
+		 */
+		public Vector getVector()
+		{
+			return vector;
+		}
+
+		/**
+		 * Return the real vector which contains positional information of this worm
+		 * 
+		 */
+		public Vector getRealVector()
+		{
+			return realVector;
+		}
+		
+		public double getDensity()
+		{
+			return DENSITY;
+		}
+
+
+		//Mutators + checkers
+
+		
+		/**
+		 * Set the world of this worm with the given world
+		 * 
+		 * @param 	world
+		 * 		 	The world which this worm belongs to
+		 * 
+		 * @post	The new world of this worm is equal to the given world.
+		 * 			|new.getWorld() == world
+		 *
+		 * @post   The last worm in the list of the world is equal to this worm
+		 *      	|(new world).getWorms().get((new world).getWorms().size()) == this
+		 */
+		
+		protected abstract void setWorld(World world);
+
+		/**
+		 * Set the real radius in function of the radius and the scale
+		 * 
+		 * @post	The real radius is equal to the radius multiply by the scale of the world
+		 * 			|new.getRealRadius() = getRadius()*getWorld().getScale()
+		 */
+		protected void setRealRadius()
+		{
+			realRadius = getRadius()*getWorld().getScale();
+		}
+
+
+		/**
+		 * Set the x location of this worm with the given x-location.
+		 * 
+		 * @param 	x
+		 * 		 	The new x location for this worm.
+		 * 
+		 * @post	The new x location of this worm is equal to the given x.
+		 * 			|new.getX() == x
+		 * 
+		 * @throws	IllegalArgumentException
+		 * 			The given x is not a number
+		 * 			|Double.isNaN(x) == true
+		 */
+		public void setX(double x) throws IllegalArgumentException
+		{
+			if(Double.isNaN(x)) throw new IllegalArgumentException();
+			vector.setX(x);
+			realVector.setX(convertToRealX(x));
+		}
+
+		/**
+		 * Set the real vector of this worm by converting vector.
+		 * 
+		 * @post	The real vector is equal to the vector converted to real value (pixels)
+		 * 			|new.getRealVector() == convertToReal(getVector())
+		 *
+		 */
+		public void setRealVector()
+		{
+			realVector = convertToReal(vector);
+		}
+
+		/**
+		 * Set the y location of this worm with the given y-location.
+		 * 
+		 * @param	y
+		 * 		  	The new y location for this worm.
+		 * 
+		 * @post	The new y location of this worm is equal to the given y.
+		 * 			|new.getY() == y
+		 * 
+		 * @throws	IllegalArgumentException
+		 * 			The given y is not a number
+		 * 			|Double.isNaN(y) == true
+		 */
+		public void setY(double y) throws IllegalArgumentException
+		{
+			if(Double.isNaN(y)) throw new IllegalArgumentException();
+			vector.setY(y);
+			realVector.setY(convertToRealY(y));
+		}
+
+
+		/**
+		 * Set the orientation of this worm with the given angle.
+		 * 
+		 * @param 	angle
+		 * 		 	The new orientation for this worm.
+		 * 
+		 * @pre		The given angle must be a valid angle.
+		 * 			|isValidOrientation(angle) == true
+		 * 
+		 * @post	The new orientation for this worm is equal to the given angle.
+		 * 			|new.getOrientation() == angle 
+		 */
+
+		public void setOrientation(double angle)
+		{
+			assert isValidOrientation(angle);
+			this.orientation = angle;
+		}
+
+
+		protected static boolean isValidOrientation(double angle)
+		{
+			return !Double.isNaN(angle) && !Double.isInfinite(angle);
+		}
+
+
+		//Action methods + action checkers
+
+		/**
+		 * Check whether this worm can jump.
+		 * 
+		 * @return 	Return true if and only if there are action points left and if the orientation set on a positive scale of 2PI is smaller or equal to PI.
+		 * 			|result == this.getActionPoints() > 0 && this.getSmallestPositiveAngle(this.getOrientation)<= Math.PI
+		 */
+		public abstract boolean canJump();
+
+		/**
+		 * @post	The new (x,y) location of this worm is equal to its (x,y) location after jumping.
+		 * 			|new.getX(jumpStep(jumpTime()[0])
+		 * 			|new.getY(jumpStep(jumpTime()[1])
+		 * 
+		 * @throws 	IllegalArgumentException
+		 * 			This worm cannot jump.
+		 * 			 |!canJump() == true
+		 */
+		public abstract void jump(double timeStep);
+
+		/**
+		 * Return the time needed to perform a possible jump until it collide with an impassable terrain
+		 * 
+		 * @return 	Return the time needed to perform a possible jump
+		 * 		
+		 */
+		public abstract Tuple<Double, Worm> jumpTime(double timeStep);
+
+
+		/**
+		 * Return the (x,y) location during a possible jump
+		 * 
+		 * @param 	time
+		 * 		 	The time elapsed from the beginning of the jump to now
+		 * 
+		 * @return Return x and y location after the given time during a possible jump.
+		 */
+		public double[] jumpStep(double time) throws IllegalArgumentException, IllegalStateException
+		{
+			if(Double.isNaN(time) || Double.isInfinite(time) || time<0 ) throw new IllegalArgumentException();
+			if(!canJump()) throw new IllegalStateException();
+
+			double initialVelocity = (getForce()/this.getMass()) * Constants.TIME_EXERTEDFORCE;
+			double initialVelocityX = initialVelocity* Math.cos(this.getOrientation());
+			double initialVelocityY = initialVelocity* Math.sin(this.getOrientation());
+
+			return new double[] {this.getX() + (initialVelocityX*time),
+					this.getY() + (initialVelocityY*time - .5*Constants.GRAVITATION*Math.pow(time, 2))};
+		}
+		
+		/**
+		 * Check whether the given vector is in the sector (in front of this worm)
+		 * 
+		 * @param 	point
+		 * 			The vector to check 
+		 * 
+		 * @return	Return true if and only if the the vector created from the worm's orientation minus PI/4 to the given vector is oriented counterclockwise and
+		 * 			the vector created from the worm's orientation plus PI/4 to the given vector is oriented clockwise and
+		 * 			the distance between the vector and worm is smaller than its radius and
+		 * 			the distance between the vector and worm is greater than .1 meter
+		 * 			Otherwise return false
+		 * 			|Return 
+		 * 			|!isClockWise(startVector, point, getRealVector()) &&
+		 *			|isClockWise(endVector, point, getRealVector()) &&
+		 * 		 	|calcDistance(point, getRealVector()) <= getRealRadius() &&
+		 *			|calcDistance(point, getRealVector()) > .1*getWorld().getScale()
+		 */
+		protected boolean isInSector(Vector point)
+		{
+			Vector startVector = new Vector(getRealX() + Math.cos(getOrientation()-.7875)*getRealRadius(), getRealY() - Math.sin(getOrientation()-.7875)*getRealRadius());
+			Vector endVector = new Vector(getRealX() + Math.cos(getOrientation()+.7875)*getRealRadius(), getRealY() - Math.sin(getOrientation()+.7875)*getRealRadius());
+
+			return  !isClockWise(startVector, point, getRealVector()) &&
+					isClockWise(endVector, point, getRealVector()) &&
+					calcDistance(point, getRealVector()) <= getRealRadius() &&
+					calcDistance(point, getRealVector()) > .1*getWorld().getScale();
+		}
+
+
+		protected boolean isClockWise(Vector v1, Vector v2, Vector center)
+		{
+			return (v1.getX()-center.getX())*(v2.getY()-center.getY()) - (v2.getX()-center.getX())*(v1.getY()-center.getY())  > 0;
+		}
+		public static double calcDistance(Vector v1, Vector v2)
+		{
+			return Math.sqrt(  Math.pow(v1.getX()-v2.getX(),2) +  Math.pow(v1.getY()-v2.getY(),2) );
+		}
+		public static double calcDistance(double x1, double y1, double x2, double y2)
+		{
+			return Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+		}
+		public Vector convertToReal(Vector v)
+		{
+			return new Vector(convertToRealX(v.getX()), convertToRealY(v.getY()) );
+		}
+		public double convertToRealX(double x)
+		{
+			return x*world.getScale();
+		}
+		public double convertToRealY(double y)
+		{
+			return world.getHeight()*world.getScale()-1 - y*world.getScale();
+		}
+		
+
+
+		/**
+		 * Terminate this worm.
+		 * 
+		 * @post 	The bazooka is terminated
+		 *       	|old.getBazooka().isTerminated() == true && new.getBazooka() == null
+		 * @post 	The rifle is terminated
+		 *      	|old.getRifle().isTerminated() == true && new.getRifle() == null
+		 * @post 	The selectedWeapon is equal to null
+		 *      	|new.getSelectedWeapon() == null
+		 * @post 	The world is equal to null
+		 *      	|new.getWorld() == null
+		 * @post 	The vector is equal to null
+		 *      	|old.getVector().isTerminated == true && new.getVector() == null
+		 * @post 	The real vector is equal to null
+		 *      	|new.getRealVector() == null
+		 * @post 	The orientation is equal to 0
+		 *      	|new.getOrientation() == 0	 
+		 * @post 	The radius is equal to 0
+		 *      	|new.getRadius() == 0	
+		 * @post 	The name is equal to null
+		 *      	|new.getName() == null
+		 * @post 	The state is equal to TERMINATED
+		 *      	|new.getState() == State.TERMINATED	    
+		 *
+		 */
+		public void terminate()
+		{
+			vector.terminate();
+			vector = null;
+			realVector.terminate();
+			realVector = null;
+		}
+
+		/**
+		 * Check whether this worm is terminated
+		 * 
+		 * @return	Return true if and only if the state of this worm equals to TERMINATED, otherwise return false
+		 * 			|Result == getState() == State.TERMINATED
+		 * 
+		 */
+		public abstract boolean isTerminated();
+
+}

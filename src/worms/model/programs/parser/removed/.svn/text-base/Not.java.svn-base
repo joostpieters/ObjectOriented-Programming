@@ -1,0 +1,20 @@
+package worms.model.programs.parser.removed;
+
+import worms.model.programs.parser.Expression;
+import worms.model.programs.parser.Literal;
+import worms.model.programs.parser.UnaryExpression;
+
+public class Not extends UnaryExpression<Boolean>{
+
+
+	public Not(Expression<Boolean> newExpression)
+	{
+		super(newExpression);
+	}
+	@Override
+	public Literal<Boolean> evaluate()
+	{
+		return ((Boolean)(operand.evaluate().getValue()) == Boolean.TRUE) ? new Literal<>(Boolean.FALSE) : new Literal<>(Boolean.TRUE);
+	}
+
+}

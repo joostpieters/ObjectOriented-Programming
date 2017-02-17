@@ -1,0 +1,57 @@
+// Worm that prints the distance to the nearest other worm, turns and fires.
+
+double angle;
+entity nearestWorm;
+double distanceToNearestWorm;
+double x;
+double y;
+double r;
+double wx;
+double wy;
+double wr;
+double distance;
+entity w;
+double d;
+
+while(w == null) do 
+{
+  d := d + 0.05;
+  x := getx self;
+  y := gety self;
+  r := getradius self;
+  
+  w := searchobj d;
+  
+  if(w != null)
+  {
+      wx := getx w;
+      wy := gety w;
+      wr := getradius w;
+      distance := sqrt((((x - wx) * (x - wx)) + ((y - wy) * (y - wy))));
+      if(nearestWorm == null) then 
+      {
+        nearestWorm := w;
+        distanceToNearestWorm := distance;
+      } 
+      else 
+      {
+        if(distance < distanceToNearestWorm) then
+         {
+          nearestWorm := w;
+          distanceToNearestWorm := distance;
+         } 
+      }
+   }
+}
+
+print d;
+if(nearestWorm != null) then 
+{
+    turn d;
+    toggleweap;
+    fire 100;
+}
+else
+{
+	print false;
+}

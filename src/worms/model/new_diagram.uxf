@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.2">
+  <zoom_level>9</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>855</x>
+      <y>1206</y>
+      <w>180</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>worms.model::Bazooka
+--
+--
++Bazooka(Worm worm): ctor
++getName(): String
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>747</x>
+      <y>225</y>
+      <w>459</w>
+      <h>306</h>
+    </coordinates>
+    <panel_attributes>/worms.model::Entity/
+--
+#DENSITY: double
+#world: World
+#vector = new Vector(): Vector
+#realVector = new Vector(): Vector
+#orientation: double
+#radius: double
+#realRadius: double
+#mass: double
+#force: double
+--
++Entity(World world): ctor
++Entity(World world, double x, double y, double orientation, double density): ctor
+#isValidOrientation(double angle): boolean
++canJump(): boolean
++jump(double timeStep): void
++jumpTime(double timeStep): Tuple&lt;Double, Worm&gt;
++jumpStep(double time): double[]
+#isInSector(Vector point): boolean
+-isClockWise(Vector v1, Vector v2, Vector center): boolean</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1242</x>
+      <y>504</y>
+      <w>576</w>
+      <h>153</h>
+    </coordinates>
+    <panel_attributes>worms.model::Projectile
+--
+#force: double
+#damage: int
+#actionPointsCost: int
+#weapon: Weapon
+--
++Projectile(World world, double x, double y, double mass, double orientation, Weapon weapon): ctor
++canJump(): boolean
++jump(double timeStep): void
++jumpTime(double timeStep): Tuple&lt;Double, Worm&gt;
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1413</x>
+      <y>846</y>
+      <w>549</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>worms.model::ProjectileBazooka
+--
+--
++ProjectileBazooka(World world, double x, double y, double orientation, Weapon weapon): ctor
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1125</x>
+      <y>774</y>
+      <w>522</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>worms.model::ProjectileRifle
+--
+--
++ProjectileRifle(World world, double x, double y, double orientation, Weapon weapon): ctor
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>378</x>
+      <y>1215</y>
+      <w>153</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>worms.model::Rifle
+--
+--
++Rifle(Worm worm): ctor
++getName(): String
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>576</x>
+      <y>1044</y>
+      <w>297</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>/worms.model::Weapon/
+--
+#worm: Worm
+#projectile: Projectile
+#isTerminated: boolean
+#actionPointsCost: int
+--
++Weapon(Worm worm, int actionPointsCost): ctor
++removeProjectile(): void
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>540</y>
+      <w>504</w>
+      <h>396</h>
+    </coordinates>
+    <panel_attributes>worms.model::World
+--
+-width: double
+-height: double
+-passableMap: boolean[][]
+-random: Random
+-scale: double
+-worms = new ArrayList&lt;Worm&gt;(): Collection&lt;Worm&gt;
+-currentWorm: Worm
+-activeProjectile: Projectile
+--
++World(double width, double height, boolean[][] passableMap, Random random): ctor
+-isValidSize(double size): boolean
++setRandom(Random random): void
++addWorm(Worm worm): void
++removeWorm(Worm worm): void
++isInRange(double i, double j): boolean
++isInRange(Vector vector): boolean
++isInRangeInMeters(double i, double j): boolean
++isImpassable(double x, double y): boolean
++isImpassable(double x, double y, double insideRadius, double outsideRadius): boolean
++isImpassable(double x, double y, double radius): boolean
++isAdjacent(double x, double y, double radius): boolean
++convertToReal(Vector v): Vector
++convertToScale(Vector v): Vector
++startNextTurn(): void
++convertToRealX(double x): double
++convertToRealY(double y): double
++addNewWorm(Program program): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>693</x>
+      <y>630</y>
+      <w>189</w>
+      <h>297</h>
+    </coordinates>
+    <panel_attributes>worms.model::Worm
+--
+- name: String 
+- actionPoints: int
+- maxActionPoints : int
+- hitPoints : int
+- maxHitPoints: int 
+- rifle: Rifle 
+- bazooka: Bazooka
+- selectedWeapon: Weapon 
+- program: Program
+--
++ Worm (World world, double x, double y, double orientation, double radius, String name, Program program): ctor
++ selectNextWeapon(): void
++ move(): void
++ canMove(): boolean
++ turn(double angle): void
++ cantTurn(double angle): boolean
++ fall(): void
++ canFall(): boolean
++ shoot(int): void
++ canShoot(int): boolean
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1638</x>
+      <y>630</y>
+      <w>90</w>
+      <h>225</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;27;81;216</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1323</x>
+      <y>630</y>
+      <w>116</w>
+      <h>161</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>99;27;27;144</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>846</x>
+      <y>1098</y>
+      <w>116</w>
+      <h>125</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;27;99;108</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>441</x>
+      <y>1098</y>
+      <w>152</w>
+      <h>134</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>135;27;27;117</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>792</x>
+      <y>504</y>
+      <w>62</w>
+      <h>143</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>45;27;27;126</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1179</x>
+      <y>414</y>
+      <w>179</w>
+      <h>107</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;27;162;90</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>819</x>
+      <y>612</y>
+      <w>440</w>
+      <h>449</h>
+    </coordinates>
+    <panel_attributes>
+m1=1
+m2=0..1
+</panel_attributes>
+    <additional_attributes>27;432;423;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>648</x>
+      <y>900</y>
+      <w>116</w>
+      <h>161</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=2
+m2=1
+</panel_attributes>
+    <additional_attributes>27;144;99;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>477</x>
+      <y>594</y>
+      <w>233</w>
+      <h>71</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=0..1
+currentWorm</panel_attributes>
+    <additional_attributes>27;27;216;54</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>477</x>
+      <y>657</y>
+      <w>233</w>
+      <h>71</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=0..*
+worms</panel_attributes>
+    <additional_attributes>27;27;216;54</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>477</x>
+      <y>540</y>
+      <w>782</w>
+      <h>62</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=0..1
+</panel_attributes>
+    <additional_attributes>27;27;765;45</additional_attributes>
+  </element>
+</diagram>
